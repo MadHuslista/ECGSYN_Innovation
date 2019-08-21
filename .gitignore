@@ -1,3 +1,6 @@
 "0.- Planificaci\303\263n"
 
 0.- Planification
+.DS_Store
+__pycache__/
+test.py
