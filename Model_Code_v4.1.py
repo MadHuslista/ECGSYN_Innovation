@@ -179,7 +179,10 @@ plt.show()
 """
 ###################### 6.- ANIMACIÓN MATPLOTLIB 2D ##############################
 """
+#fig_2d = plt.figure()
+#data_2d = [x_values, y_values, z_values]
 
+#sign, = ax.plot()
 
 
 """
@@ -191,9 +194,9 @@ ax = p3.Axes3D(fig)
 
 data = np.array(psoln).T
 data[2] = z_values
-line, = ax.plot(data[0, 0:1], data[1, 0:1], data[2, 0:1])
-liner, = ax.plot(data[0, 0:1], data[1, 0:1], data[2, 0:1], 'r')
-pointer, = ax.plot(data[0, 1:1], data[1, 1:1], data[2, 1:1], 'rD')
+
+line, = ax.plot([],[],[])
+liner, = ax.plot([],[],[], 'r')
 
 # Setting the axes properties
 ax.set_xlim3d([-1.0, 1.0])
