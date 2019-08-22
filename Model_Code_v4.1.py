@@ -182,7 +182,7 @@ plt.show()
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 5 #Monitor Time Range
+mtr = 7 #Monitor Time Range
 
 data_2d = [t, z_values]
 
@@ -219,6 +219,8 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     xmin, xmax = ax_2d.get_xlim()
     pos_inf = int(xmin/dt)
     pos_sup = int(xmax/dt)
+    if pos_sup > len(t)-1:
+        pos_sup = len(t)-1
     gap = 2
 
     xdata1 = t[pos_inf:num-gap]
