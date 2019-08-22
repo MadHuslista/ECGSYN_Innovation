@@ -181,15 +181,28 @@ plt.show()
 """
 fig_2d, ax_2d = plt.subplots()
 
-data_2d = [x_values, y_values, z_values]
+data_2d = [t, z_values]
 
 sign, = ax_2d.plot([],[])
 
-ax_2d.set_xlim([-1.0,1.0])
+ax_2d.set_xlim([0,10])
 ax_2d.set_xlabel('X')
 
 ax_2d.set_ylim([-0.5,1.5])
 ax_2d.set_ylabel('Y')
+
+def ecg_beat(num, data, sign, hrmean, dt):
+    
+    t = data[0]
+    z = data[1]
+    
+    sign.set_data(t[0:num] ,z[0:num]  )
+    
+    return sign,
+
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), fargs = (data_2d,sign,hrmean,dt), interval=1000*dt, blit=1)
+plt.show()
+
 
 """
 ###################### 7.- ANIMACIÓN MATPLOTLIB 3D ##############################
