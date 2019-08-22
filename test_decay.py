@@ -6,6 +6,7 @@ import matplotlib.animation as animation
 def data_gen(t=0):
     cnt = 0
     while cnt < 1000:
+        print(cnt)
         cnt += 1
         t += 0.1
         yield t, np.sin(2*np.pi*t) * np.exp(-t/10.)
@@ -33,7 +34,7 @@ def run(data):
     xmin, xmax = ax.get_xlim()
 
     if t >= xmax:
-        ax.set_xlim(xmin, 2*xmax)
+        ax.set_xlim(xmin+5, 5+xmax)
         ax.figure.canvas.draw()
     line.set_data(xdata, ydata)
 

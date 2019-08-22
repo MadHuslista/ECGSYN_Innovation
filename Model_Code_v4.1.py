@@ -38,7 +38,7 @@ Hz_Noise = 50
 Hz_Anoise = 0.05
 
 dt = 0.01
-n = 10
+n = 20
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -179,10 +179,75 @@ plt.show()
 """
 ###################### 6.- ANIMACIÓN MATPLOTLIB 2D ##############################
 """
-#fig_2d = plt.figure()
-#data_2d = [x_values, y_values, z_values]
+fig_2d, ax_2d = plt.subplots()
+#Agregar grid reglamentaria del papel al gráfico 
 
-#sign, = ax.plot()
+mtr = 7 #Monitor Time Range
+
+data_2d = [t, z_values]
+
+sign, = ax_2d.plot([],[],'g')
+signr, = ax_2d.plot([],[],'g')
+
+ax_2d.set_xlim([0,mtr])
+ax_2d.set_xlabel('X')
+
+ax_2d.set_ylim(-0.25,1.75)
+ax_2d.set_ylabel('Y')
+
+xdata1, ydata1 = [], []
+xdata2, ydata2 = [], []
+
+
+def init():                     #Sin esta función también funciona. Pero creo que es más eficiente. No sé quizás no también
+    ax_2d.set_ylim(-0.25,1.75)
+    ax_2d.set_xlim(0, mtr)
+    del xdata1[:]
+    del ydata1[:]
+    del xdata2[:]
+    del ydata2[:]
+    sign, = ax_2d.plot([],[])
+    signr,= ax_2d.plot([],[])
+    return sign,
+
+
+def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
+    
+    t = data[0]
+    z = data[1]
+
+    xmin, xmax = ax_2d.get_xlim()
+    pos_inf = int(xmin/dt)
+    pos_sup = int(xmax/dt)
+    if pos_sup > len(t)-1:
+        pos_sup = len(t)-1
+    gap = 2
+
+    xdata1 = t[pos_inf:num-gap]
+    ydata1 = z[pos_inf:num-gap]
+    if num*dt < mtr:
+        xdata2 = []
+        ydata2 = []
+    else:
+        xdata2 = t[num+gap:pos_sup]
+        ydata2 = z[num+gap-int(mtr/dt):pos_sup-int(mtr/dt)]
+    
+    if num <= 1: 
+        ax_2d.set_xlim(0,mtr)
+        ax_2d.figure.canvas.draw()
+        
+    elif dt*num > xmax: 
+        ax_2d.set_xlim(xmin+mtr,xmax+mtr)
+        ax_2d.figure.canvas.draw()
+ 
+    sign.set_data(xdata1,ydata1)
+    signr.set_data(xdata2,ydata2)  
+ 
+    return sign, signr
+    
+
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr), interval=1000*dt, blit=1)
+plt.show()
 
 
 """
@@ -256,6 +321,7 @@ OBJETIVOS:
     + Visualización completa para un número especificado de ciclos y parámetros 
             5.-
 	- Visualización animada 2D actualizabley que responde a interacción
+            Ya está animada
     - Visualización animada 3D actualizable y que responde a interacción
 
 PROBLEMAS A SOLUCIONAR: 
@@ -279,6 +345,6 @@ PROBLEMAS A SOLUCIONAR
 - el tema de la velocidad de sampleo. 
 + Ordenar el tema de la vairable Z que recibe el ruido. Quizás hacer dos psol. psol sólo que sería la señal sin nada y psol_noise que sería la señal con ruido blanco. 
 + Cachar como agregar un ruido de 50 Hz!. 
-- Animar ECG 2D! 
++ Animar ECG 2D! 
 - FUTURO cachar como colocar patologías! 
 """
