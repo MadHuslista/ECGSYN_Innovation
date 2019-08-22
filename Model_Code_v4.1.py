@@ -38,7 +38,7 @@ Hz_Noise = 50
 Hz_Anoise = 0.05
 
 dt = 0.01
-n = 2
+n = 10
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -177,42 +177,14 @@ plt.show()
 #plt.show()
 
 """
-###################### 6.- ANIMACIÓN MATPLOTLIB 3D ##############################
+###################### 6.- ANIMACIÓN MATPLOTLIB 2D ##############################
 """
 
-#def update(num, data, line):
-#    line.set_data(data[:2, :num])
-#    line.set_3d_properties(data[2, :num])
 
 
-
-
-
-def update(num, data, line, liner, pointer, hrmean, dt):
-    
-    rr_interval = 60/(hrmean*dt)
-    segunda_vuelta = rr_interval*2
-    
-    
-    rr_interval = int(rr_interval)    
-    segunda_vuelta = int(segunda_vuelta)
-    
-    if num > segunda_vuelta :
-        line.set_data(data[:2, (num-segunda_vuelta):(num-rr_interval+1)])
-        line.set_3d_properties(data[2, (num-segunda_vuelta):(num-rr_interval+1)])
-        
-        liner.set_data(data[:2, (num-rr_interval):num])
-        liner.set_3d_properties(data[2, (num-rr_interval):num])
-        
-#        pointer.set_data(data[:2, num-1])
-#        pointer.set_3d_properties(data[2, num-1])
-    else:
-        liner.set_data(data[:2, 0:num])
-        liner.set_3d_properties(data[2, 0:num])
-        
-#        pointer.set_data(data[:2, num-1])
-#        pointer.set_3d_properties(data[2, num-1])
-    
+"""
+###################### 7.- ANIMACIÓN MATPLOTLIB 3D ##############################
+"""
 
 fig = plt.figure()
 ax = p3.Axes3D(fig)
@@ -233,7 +205,37 @@ ax.set_ylabel('Y')
 ax.set_zlim3d([-0.5, 1.5])
 ax.set_zlabel('Z')
 
-ani = animation.FuncAnimation(fig, update, frames=len(psoln), fargs=(data, line, liner, pointer, hrmean, dt), interval=1, blit=False)
+
+def update(num, data, line, liner, hrmean, dt):
+    
+    rr_interval = 60/(hrmean*dt)
+    segunda_vuelta = rr_interval*2
+    
+    
+    rr_interval = int(rr_interval)    
+    segunda_vuelta = int(segunda_vuelta)
+    
+    if num > segunda_vuelta :
+        line.set_data(data[:2, (num-segunda_vuelta):(num-rr_interval+1)])
+        line.set_3d_properties(data[2, (num-segunda_vuelta):(num-rr_interval+1)])
+        
+        liner.set_data(data[:2, (num-rr_interval):num])
+        liner.set_3d_properties(data[2, (num-rr_interval):num])
+        
+                       
+        return line,liner
+
+
+    else:
+        liner.set_data(data[:2, 0:num])
+        liner.set_3d_properties(data[2, 0:num])
+        
+        return line,liner
+    
+
+
+
+ani = animation.FuncAnimation(fig, update, frames=len(psoln), fargs=(data, line, liner, hrmean, dt), interval=1000*dt, blit=1)
 
 plt.show()
 
@@ -243,6 +245,7 @@ plt.show()
 """
 ###################### ANIMACIÓN MATPLOTLIB 2D ##############################
 """
+
 
 """REDISEÑO
 
@@ -258,6 +261,7 @@ PROBLEMAS A SOLUCIONAR:
             - Generar un nuevo set de RR_gen
             - Generar un nuevo set de puntos de la función.
 
+
 """
 
 
@@ -266,7 +270,7 @@ PROBLEMAS A SOLUCIONAR
 
 + Preparar Input serie temporal (Tuve que pasar del ODEINT a la clase ODE y hacerlo como 'manual')
 + Preparar Input de parámetros.  
-- Velocidad de Animación. Debería ser 60 por min. hasta ahora no lo da. 
++ Velocidad de Animación. Debería ser 60 por min. hasta ahora no lo da. 
 + Abstraer la posición de la sobreposición (El problema era que las abstracciones me estaban quedando en float, pero las listas sólo reconocen int. Había que sólo transformar el tipo)
 + Revisar el parámetro 'n' 
 - el tema de la velocidad de sampleo. 
