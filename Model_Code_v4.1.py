@@ -199,9 +199,9 @@ xdata1, ydata1 = [], []
 xdata2, ydata2 = [], []
 
 
-def init():
-    ax.set_ylim(-0.25,1.75)
-    ax.set_xlim(0, 5)
+def init():                     #Sin esta función también funciona. Pero creo que es más eficiente. No sé quizás no también
+    ax_2d.set_ylim(-0.25,1.75)
+    ax_2d.set_xlim(0, mtr)
     del xdata1[:]
     del ydata1[:]
     del xdata2[:]
@@ -244,7 +244,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     return sign, signr
     
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), fargs = (data_2d,sign, signr,hrmean,dt, mtr), interval=1000*dt, blit=1)
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr), interval=1000*dt, blit=1)
 plt.show()
 
 
