@@ -37,8 +37,8 @@ Anoise = 0.15                             #Additive uniformly distributed measur
 Hz_Noise = 50
 Hz_Anoise = 0.05
 
-dt = 0.01
-n = 20
+dt = 0.01                               # En segundos
+n = 10
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -182,7 +182,7 @@ plt.show()
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 7 #Monitor Time Range
+mtr = 5 #Monitor Time Range
 
 data_2d = [t, z_values]
 
@@ -199,7 +199,7 @@ xdata1, ydata1 = [], []
 xdata2, ydata2 = [], []
 
 
-def init():                     #Sin esta función también funciona. Pero creo que es más eficiente. No sé quizás no también
+def init():                     #Sin esta función también funciona. Documentación sugiere que es más eficiente. No lo sé
     ax_2d.set_ylim(-0.25,1.75)
     ax_2d.set_xlim(0, mtr)
     del xdata1[:]
@@ -319,7 +319,7 @@ plt.show()
 
 OBJETIVOS: 
     + Visualización completa para un número especificado de ciclos y parámetros 
-            5.-
+            En punto 5
 	- Visualización animada 2D actualizabley que responde a interacción
             Ya está animada
     - Visualización animada 3D actualizable y que responde a interacción
