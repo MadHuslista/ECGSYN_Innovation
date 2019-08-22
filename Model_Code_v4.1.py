@@ -179,11 +179,17 @@ plt.show()
 """
 ###################### 6.- ANIMACIÓN MATPLOTLIB 2D ##############################
 """
-#fig_2d = plt.figure()
-#data_2d = [x_values, y_values, z_values]
+fig_2d, ax_2d = plt.subplots()
 
-#sign, = ax.plot()
+data_2d = [x_values, y_values, z_values]
 
+sign, = ax_2d.plot([],[])
+
+ax_2d.set_xlim([-1.0,1.0])
+ax_2d.set_xlabel('X')
+
+ax_2d.set_ylim([-0.5,1.5])
+ax_2d.set_ylabel('Y')
 
 """
 ###################### 7.- ANIMACIÓN MATPLOTLIB 3D ##############################
