@@ -23,7 +23,7 @@ from datetime import datetime
 
 Resp_by_min = 15
 hrmean = 60
-hrstd = 1
+hrstd = 5
 sfrr = 1
 c1 = 2*m.pi*0.01
 c2 = 2*m.pi*0.01
@@ -190,10 +190,18 @@ sign, = ax_2d.plot([],[],'g')
 signr, = ax_2d.plot([],[],'g')
 
 ax_2d.set_xlim([0,mtr])
-ax_2d.set_xlabel('X')
+ax_2d.set_xlabel('t [s]')
+
+ax_2d.xaxis.grid(True, which='major', lw= 1.5)
+ax_2d.xaxis.grid(True, which='minor', lw= 0.5)
 
 ax_2d.set_ylim(-0.25,1.75)
-ax_2d.set_ylabel('Y')
+ax_2d.set_ylabel('V [mV]')
+
+ax_2d.set_yticks(np.arange(-0.25,2, step=0.5), minor = False)                
+ax_2d.set_yticks(np.arange(-0.25,2, step=0.1), minor = True)
+ax_2d.yaxis.grid(True, which='major', lw= 1.5)
+ax_2d.yaxis.grid(True, which='minor', lw= 0.5)
 
 xdata1, ydata1 = [], []
 xdata2, ydata2 = [], []
@@ -237,16 +245,24 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     else:
         xdata2 = t[num+semi_gap:pos_sup]
         ydata2 = z[num+semi_gap-int(mtr/dt):pos_sup-int(mtr/dt)]
+
+        
     
     if num <= 1: 
         ax_2d.set_xlim(0,mtr)
-#        ax_2d.set_xticks(np.arange(0, mtr, step=0.2))
+        
+        ax_2d.set_xticks(np.arange(0,mtr, step=0.2), minor = False)                
+        ax_2d.set_xticks(np.arange(0,mtr, step=0.04), minor = True)
+
         
         ax_2d.figure.canvas.draw()
         
     elif dt*num > xmax: 
         ax_2d.set_xlim(xmin+mtr,xmax+mtr)                
-#        ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.2))
+
+        ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.2), minor = False)                
+        ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.04), minor = True)
+
         ax_2d.figure.canvas.draw()
  
     sign.set_data(xdata1,ydata1)
