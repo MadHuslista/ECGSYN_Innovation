@@ -38,7 +38,7 @@ Hz_Noise = 50
 Hz_Anoise = 0.05
 
 dt = 0.01
-n = 20
+n = 10
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -182,7 +182,7 @@ plt.show()
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 7 #Monitor Time Range
+mtr = 4 #Monitor Time Range
 
 data_2d = [t, z_values]
 
@@ -215,29 +215,38 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     
     t = data[0]
     z = data[1]
-
+    
+    gap = 10    #Separación entre la nueva señal y la anterior. En ms
+    semi_gap = int(gap/2)
+    
     xmin, xmax = ax_2d.get_xlim()
     pos_inf = int(xmin/dt)
     pos_sup = int(xmax/dt)
     if pos_sup > len(t)-1:
         pos_sup = len(t)-1
-    gap = 2
-
-    xdata1 = t[pos_inf:num-gap]
-    ydata1 = z[pos_inf:num-gap]
+    
+    
+    
+    xdata1 = t[pos_inf:num-semi_gap]
+    ydata1 = z[pos_inf:num-semi_gap]
+    
+    
     if num*dt < mtr:
         xdata2 = []
         ydata2 = []
     else:
-        xdata2 = t[num+gap:pos_sup]
-        ydata2 = z[num+gap-int(mtr/dt):pos_sup-int(mtr/dt)]
+        xdata2 = t[num+semi_gap:pos_sup]
+        ydata2 = z[num+semi_gap-int(mtr/dt):pos_sup-int(mtr/dt)]
     
     if num <= 1: 
         ax_2d.set_xlim(0,mtr)
+#        ax_2d.set_xticks(np.arange(0, mtr, step=0.2))
+        
         ax_2d.figure.canvas.draw()
         
     elif dt*num > xmax: 
-        ax_2d.set_xlim(xmin+mtr,xmax+mtr)
+        ax_2d.set_xlim(xmin+mtr,xmax+mtr)                
+#        ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.2))
         ax_2d.figure.canvas.draw()
  
     sign.set_data(xdata1,ydata1)
