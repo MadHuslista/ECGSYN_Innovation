@@ -159,6 +159,13 @@ y_values = np.array(psoln).T[1]
 z_values = z
 
 """Gráfico 2D (t, Z)"""
+
+fig_st, ax_st = plt.subplots()
+ax_st.plot(t, z_values)
+ax_st.set_xlabel('Time [s]')
+ax_st.set_ylabel('V [mV]')
+plt.show()
+
 plt.figure()
 plt.plot(t, z_values)
 plt.xlabel('time')
