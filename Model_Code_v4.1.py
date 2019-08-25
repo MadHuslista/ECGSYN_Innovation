@@ -37,8 +37,13 @@ Anoise = 0.15                             #Additive uniformly distributed measur
 Hz_Noise = 50
 Hz_Anoise = 0.05
 
+
 dt = 0.01                               # En segundos
 n = 10
+
+
+#print(str(datetime.now()))
+
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -145,9 +150,9 @@ for i in range(len(z)):
     z[i] = z[i] + Anoise*white_noise[i]         #Aquí el ruido aleatorio entre [-1,1] se escala a la magnitud deseada del ruido (Anoise) y se suma a cada valor de z[i]
     
 noise = np.sin(2*np.pi*t*Hz_Noise)
-print(max(noise), min(noise))
 z = z + Hz_Anoise*noise
 
+#print(str(datetime.now()))
 
 """
 ####################### 5.- GRAFICACÍON CON MATPLOTLIB ###################
@@ -182,7 +187,7 @@ plt.show()
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 4 #Monitor Time Range
+mtr = 2 #Monitor Time Range
 
 data_2d = [t, z_values]
 
@@ -191,6 +196,8 @@ signr, = ax_2d.plot([],[],'g')
 
 ax_2d.set_xlim([0,mtr])
 ax_2d.set_xlabel('t [s]')
+
+ax_2d.set_aspect(0.4)
 
 ax_2d.xaxis.grid(True, which='major', lw= 1.5)
 ax_2d.xaxis.grid(True, which='minor', lw= 0.5)
@@ -202,6 +209,7 @@ ax_2d.set_yticks(np.arange(-0.25,2, step=0.5), minor = False)
 ax_2d.set_yticks(np.arange(-0.25,2, step=0.1), minor = True)
 ax_2d.yaxis.grid(True, which='major', lw= 1.5)
 ax_2d.yaxis.grid(True, which='minor', lw= 0.5)
+
 
 xdata1, ydata1 = [], []
 xdata2, ydata2 = [], []
@@ -223,6 +231,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     
     t = data[0]
     z = data[1]
+    #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
     
     gap = 10    #Separación entre la nueva señal y la anterior. En ms
     semi_gap = int(gap/2)
