@@ -38,7 +38,10 @@ Hz_Noise = 50
 Hz_Anoise = 0.05
 
 dt = 0.01
-n = 10
+n = 256
+
+#print(str(datetime.now()))
+
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -145,9 +148,9 @@ for i in range(len(z)):
     z[i] = z[i] + Anoise*white_noise[i]         #Aquí el ruido aleatorio entre [-1,1] se escala a la magnitud deseada del ruido (Anoise) y se suma a cada valor de z[i]
     
 noise = np.sin(2*np.pi*t*Hz_Noise)
-print(max(noise), min(noise))
 z = z + Hz_Anoise*noise
 
+#print(str(datetime.now()))
 
 """
 ####################### 5.- GRAFICACÍON CON MATPLOTLIB ###################
@@ -226,6 +229,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     
     t = data[0]
     z = data[1]
+    #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
     
     gap = 10    #Separación entre la nueva señal y la anterior. En ms
     semi_gap = int(gap/2)
