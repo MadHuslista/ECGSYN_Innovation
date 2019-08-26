@@ -37,7 +37,7 @@ def RR_gen(f1, f2, c1, c2, hrmean, hrstd, n):
     for i in w:
         suma = s1(i)+s2(i)
         sf.append(suma)
-    plt.plot(sf)
+    #plt.plot(sf)
     sf0 = []
     for i in range(0,int(n/2)):
         piv = sf[i]
