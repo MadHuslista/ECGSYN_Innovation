@@ -14,10 +14,12 @@ Created on Wed Aug 21 01:47:25 2019
 import math as m
 import numpy as np
 import scipy as sp
+import matplotlib.pyplot as plt 
 
 
 def RR_gen(f1, f2, c1, c2, hrmean, hrstd, n):
     
+    #def param
     rrstd = 60*(hrstd)/(hrmean*hrmean)
     rrmean = 60/hrmean
     sfrr = 1
@@ -25,6 +27,8 @@ def RR_gen(f1, f2, c1, c2, hrmean, hrstd, n):
     theta2 = 1
     df = sfrr/n
     w = np.arange(0,n,1)*2*m.pi*df
+    
+    
     def s1(x):
         return(((theta1)*m.exp(-0.5*((x-f1)/c1)**2))/m.sqrt(2*m.pi*c1**2))
     def s2(y):
@@ -33,6 +37,7 @@ def RR_gen(f1, f2, c1, c2, hrmean, hrstd, n):
     for i in w:
         suma = s1(i)+s2(i)
         sf.append(suma)
+    plt.plot(sf)
     sf0 = []
     for i in range(0,int(n/2)):
         piv = sf[i]
@@ -79,3 +84,18 @@ def RR_gen(f1, f2, c1, c2, hrmean, hrstd, n):
         
     return rr_times
 
+def main():
+    
+    hrmean = 60
+    hrstd = 1
+    sfrr = 1
+    c1 = 2*m.pi*0.01
+    c2 = 2*m.pi*0.01
+    f1 = 0.1*2*m.pi
+    f2 = 0.25*2*m.pi
+    n = 250
+
+    rr_times = RR_gen(f1, f2, c1, c2, hrmean, hrstd, n)
+    
+if __name__ == "__main__":
+    main()
