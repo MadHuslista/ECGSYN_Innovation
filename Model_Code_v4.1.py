@@ -32,7 +32,7 @@ f2 = 0.25*2*m.pi
 
 
 
-
+Amp_ECG = 1.7
 Anoise = 0.15                             #Additive uniformly distributed measurement noise [0 mV]
 Hz_Noise = 50
 Hz_Anoise = 0.05
@@ -143,7 +143,7 @@ z = psoln_transp[2]
 zmin = min(z)
 zmax = max(z)
 zrange = zmax - zmin              #Aquí se obtiene el rango máximo de z
-z = (z - zmin)*(1.6)/zrange #-0.4    #Aquí cada dato, es escalado en proporción zrange:1.6 con una regla de 3 simple =>  Zrange/(Z- zmin) = 1.6 / x ; donde x es el nuevo valor de z
+z = (z - zmin)*(Amp_ECG)/zrange #-0.4    #Aquí cada dato, es escalado en proporción zrange:1.6 con una regla de 3 simple =>  Zrange/(Z- zmin) = 1.6 / x ; donde x es el nuevo valor de z
 
 white_noise = 2*np.random.rand(len(z), 1) -1    #Aquí el np.random.rand() genera ruido aleatorio de distribución uniforme, entre [0,1]. Luego al multiplicar por 2, el rango queda en [0,2], y finalmente al restar en uno, queda [-1,1] => Conclusión: Ruido aleatorio entre -1 y 1
 for i in range(len(z)):
@@ -188,8 +188,8 @@ ax_st.yaxis.grid(True, which='minor', lw= 0.5)
 ax_st.set_xticks(np.arange(0,t[-1], step=0.2), minor = False)                
 ax_st.set_xticks(np.arange(0,t[-1], step=0.04), minor = True)
 #-
-ax_st.set_yticks(np.arange(-0.25,1.75, step=0.5), minor = False)                
-ax_st.set_yticks(np.arange(-0.25,1.75, step=0.1), minor = True)
+ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.5), minor = False)                
+ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.1), minor = True)
 
 ax_st.set_aspect(0.4)
 
@@ -225,11 +225,11 @@ ax_2d.set_aspect(0.4)
 ax_2d.xaxis.grid(True, which='major', lw= 1.5)
 ax_2d.xaxis.grid(True, which='minor', lw= 0.5)
 
-ax_2d.set_ylim(-0.25,1.75)
+ax_2d.set_ylim(Amp_ECG*-0.15,Amp_ECG*1.09)
 ax_2d.set_ylabel('V [mV]')
 
-ax_2d.set_yticks(np.arange(-0.25,2, step=0.5), minor = False)                
-ax_2d.set_yticks(np.arange(-0.25,2, step=0.1), minor = True)
+ax_2d.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.5), minor = False)                
+ax_2d.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.1), minor = True)
 ax_2d.yaxis.grid(True, which='major', lw= 1.5)
 ax_2d.yaxis.grid(True, which='minor', lw= 0.5)
 
@@ -239,7 +239,7 @@ xdata2, ydata2 = [], []
 
 
 def init():                     #Sin esta función también funciona. Documentación sugiere que es más eficiente. No lo sé
-    ax_2d.set_ylim(-0.25,1.75)
+    ax_2d.set_ylim(Amp_ECG*-0.15,Amp_ECG*1.09)
     ax_2d.set_xlim(0, mtr)
     del xdata1[:]
     del ydata1[:]
