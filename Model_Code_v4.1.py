@@ -354,9 +354,10 @@ plt.show()
 OBJETIVOS: 
     + Visualización completa para un número especificado de ciclos y parámetros 
             En punto 5
-	- Visualización animada 2D actualizabley que responde a interacción
-            Ya está animada
-    - Visualización animada 3D actualizable y que responde a interacción
+	+ Visualización animada 2D 
+    + Visualización animada 3D 
+    - Interacción con anim 2D
+    - Interacción con anim 3D
 
 PROBLEMAS A SOLUCIONAR: 
     - Primero graficar animación 2D tal que se vea igual que la 3D anterior
