@@ -38,12 +38,12 @@ Hz_Noise = 50
 Hz_Anoise = 0.05
 
 
+
 dt = 0.01                               # En segundos
 n = 10
 
 
 #print(str(datetime.now()))
-
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -164,11 +164,34 @@ y_values = np.array(psoln).T[1]
 z_values = z
 
 """Gráfico 2D (t, Z)"""
-plt.figure()
-plt.plot(t, z_values)
-plt.xlabel('time')
-plt.ylabel('z')
-plt.show()
+#plt.figure()
+#plt.plot(t, z_values)
+#plt.xlabel('time')
+#plt.ylabel('z')
+#plt.show()
+
+
+fig_st, ax_st = plt.subplots()
+ax_st.plot(t, z_values)
+
+ax_st.set_xlabel('Time [s]')
+ax_st.set_ylabel('V [mV]')
+
+
+ax_st.xaxis.grid(True, which='major', lw= 1.5)
+ax_st.xaxis.grid(True, which='minor', lw= 0.5)
+#-
+ax_st.yaxis.grid(True, which='major', lw= 1.5)
+ax_st.yaxis.grid(True, which='minor', lw= 0.5)
+
+
+ax_st.set_xticks(np.arange(0,t[-1], step=0.2), minor = False)                
+ax_st.set_xticks(np.arange(0,t[-1], step=0.04), minor = True)
+#-
+ax_st.set_yticks(np.arange(-0.25,1.75, step=0.5), minor = False)                
+ax_st.set_yticks(np.arange(-0.25,1.75, step=0.1), minor = True)
+
+ax_st.set_aspect(0.4)
 
 
 
