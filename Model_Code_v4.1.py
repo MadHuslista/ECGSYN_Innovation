@@ -264,7 +264,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
         ax_2d.set_xticks(np.arange(0,mtr, step=0.04), minor = True)
 
         
-        ax_2d.figure.canvas.draw()
+        ax_2d.figure.canvas.draw_idle()
         
     elif dt*num > xmax: 
         ax_2d.set_xlim(xmin+mtr,xmax+mtr)                
@@ -272,7 +272,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
         ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.2), minor = False)                
         ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.04), minor = True)
 
-        ax_2d.figure.canvas.draw()
+        ax_2d.figure.canvas.draw_idle()
  
     sign.set_data(xdata1,ydata1)
     signr.set_data(xdata2,ydata2)  
@@ -280,7 +280,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     return sign, signr
     
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr), interval=1000*dt, blit=1)
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr), interval=1000*dt, blit=1, repeat=0)
 plt.show()
 
 
