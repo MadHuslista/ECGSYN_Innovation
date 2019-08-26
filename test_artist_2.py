@@ -33,15 +33,16 @@ cycloid_c = R*thetas
 fig = plt.figure()
 
 lns = []
-trans = plt.axes().transAxes
+#trans = plt.axes().transAxes
 for i in range(len(thetas)):
     x,y = circle(cycloid_c[i], R, R)
-    ln1, = plt.plot(x, y, 'g-', lw=2)
+#    ln1, = plt.plot(x, y, 'g-', lw=2)
     ln2, = plt.plot(cycloid_x[:i+1] ,cycloid_y[:i+1], 'r-', lw=2)
-    ln3, = plt.plot(cycloid_x[i], cycloid_y[i], 'bo', markersize=4)
-    ln4, = plt.plot([cycloid_c[i], cycloid_x[i]], [R,cycloid_y[i]], 'y-', lw=2)
-    tx1  = plt.text(0.05, 0.8, r'$\theta$ = %.2f $\pi$' % (thetas[i]/np.pi), transform=trans)
-    lns.append([ln1,ln2,ln3,ln4,tx1])
+#    ln3, = plt.plot(cycloid_x[i], cycloid_y[i], 'bo', markersize=4)
+#    ln4, = plt.plot([cycloid_c[i], cycloid_x[i]], [R,cycloid_y[i]], 'y-', lw=2)
+#    tx1  = plt.text(0.05, 0.8, r'$\theta$ = %.2f $\pi$' % (thetas[i]/np.pi), transform=trans)
+#    lns.append([ln1,ln2,ln3,ln4,tx1])
+    lns.append([ln2])
 plt.xlim(0,15)
 plt.ylim(0,3)
 plt.xlabel('x')
