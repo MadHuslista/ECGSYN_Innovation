@@ -19,31 +19,29 @@ from datetime import datetime
 ####################### 0.- PARÁMETROS DE CONFIGURACIÓN ####################################
 """
 
-#Parámetros Tacograma
+#Parámetros Generales
 
-Resp_by_min = 15
-hrmean = 60
-hrstd = 5
-sfrr = 1
-c1 = 2*m.pi*0.01
-c2 = 2*m.pi*0.01
-f1 = 0.1*2*m.pi
-f2 = 0.25*2*m.pi
+hrmean = 60                         #Frecuencia Cardíaca
+Resp_by_min = 15                    #Frecuencia Respiratoria
+Amp_ECG = 1.7                       #Amplitud Máxima ECG
+n = 10                              #Cantidad de Pulsaciones simuladas
 
-
-
-Amp_ECG = 1.7
-Anoise = 0.15                             #Additive uniformly distributed measurement noise [0 mV]
-Hz_Noise = 50
-Hz_Anoise = 0.05
+#Control de Artefactos
+Anoise = 0.15                       #Amplitud del Ruido Aleatorio
+Hz_Noise = 50                       #Frecuencia de la Interferencia
+Hz_Anoise = 0.05                    #Amplitud de la Interferencia
 
 
+#Variabilidad del Pulso Cardíaco
+hrstd = 5                           #Desviación Estándar de la Frecuencia Cardíaca
+c1 = 2*m.pi*0.01                    #Desviación Estándar Onda Mayer
+c2 = 2*m.pi*0.01                    #Desviación Estándar Onda RSA
+f1 = 0.1*2*m.pi                     #Frecuencia Central Onda Mayer
+f2 = 0.25*2*m.pi                    #Frecuencia Central Onda RSA
 
-dt = 0.01                               # En segundos
-n = 10
 
+#La Morfología del Ciclo ECG se define en el punto 2.- "DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO DE VARIABLES"
 
-#print(str(datetime.now()))
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -60,7 +58,7 @@ for i in rr_times:
 
 
 """
-########################### 2.- DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO ########################### 
+########################### 2.- DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO DE VARIABLES ########################### 
 """
 
 hr_factor = np.sqrt(hrmean/60)            #Factor que permite la adaptabilidad de las posiciones al ritmo cardíaco 
@@ -105,7 +103,7 @@ Z0 = 0.04
 y0 = [X0, Y0, Z0]                       #Empaquetamiento de los valores iniciales en una sóla variable. 
 
 """Construcción del step size para la integración numérica"""
-#dt = 0.01                              #Comentado porque se presenta arriba 
+dt = 0.01                              
 t = np.arange(0, rr_axis[-1], dt)       #rr_axis[-1] representa al último elemento de rr_axis
 
 
@@ -142,8 +140,8 @@ z = psoln_transp[2]
 
 zmin = min(z)
 zmax = max(z)
-zrange = zmax - zmin              #Aquí se obtiene el rango máximo de z
-z = (z - zmin)*(Amp_ECG)/zrange #-0.4    #Aquí cada dato, es escalado en proporción zrange:1.6 con una regla de 3 simple =>  Zrange/(Z- zmin) = 1.6 / x ; donde x es el nuevo valor de z
+zrange = zmax - zmin                            #Aquí se obtiene el rango máximo de z
+z = (z - zmin)*(Amp_ECG)/zrange                 #Aquí cada dato, es escalado en proporción zrange:1.6 con una regla de 3 simple =>  Zrange/(Z- zmin) = 1.6 / x ; donde x es el nuevo valor de z
 
 white_noise = 2*np.random.rand(len(z), 1) -1    #Aquí el np.random.rand() genera ruido aleatorio de distribución uniforme, entre [0,1]. Luego al multiplicar por 2, el rango queda en [0,2], y finalmente al restar en uno, queda [-1,1] => Conclusión: Ruido aleatorio entre -1 y 1
 for i in range(len(z)):
@@ -152,7 +150,7 @@ for i in range(len(z)):
 noise = np.sin(2*np.pi*t*Hz_Noise)
 z = z + Hz_Anoise*noise
 
-#print(str(datetime.now()))
+
 
 """
 ####################### 5.- GRAFICACÍON CON MATPLOTLIB ###################
@@ -164,11 +162,6 @@ y_values = np.array(psoln).T[1]
 z_values = z
 
 """Gráfico 2D (t, Z)"""
-#plt.figure()
-#plt.plot(t, z_values)
-#plt.xlabel('time')
-#plt.ylabel('z')
-#plt.show()
 
 
 fig_st, ax_st = plt.subplots()
@@ -208,7 +201,7 @@ ax_st.set_aspect(0.4)
 ###################### 6.- ANIMACIÓN MATPLOTLIB 2D ##############################
 """
 fig_2d, ax_2d = plt.subplots()
-#Agregar grid reglamentaria del papel al gráfico 
+
 
 mtr = 2 #Monitor Time Range
 
@@ -238,7 +231,7 @@ xdata1, ydata1 = [], []
 xdata2, ydata2 = [], []
 
 
-def init():                     #Sin esta función también funciona. Documentación sugiere que es más eficiente. No lo sé
+def init():                    
     ax_2d.set_ylim(Amp_ECG*-0.15,Amp_ECG*1.09)
     ax_2d.set_xlim(0, mtr)
     del xdata1[:]
@@ -254,9 +247,9 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     
     t = data[0]
     z = data[1]
-    #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
+
     
-    gap = 10    #Separación entre la nueva señal y la anterior. En ms
+    gap = 10    
     semi_gap = int(gap/2)
     
     xmin, xmax = ax_2d.get_xlim()
@@ -320,7 +313,6 @@ data[2] = z_values
 line, = ax.plot([],[],[])
 liner, = ax.plot([],[],[], 'r')
 
-# Setting the axes properties
 ax.set_xlim3d([-1.0, 1.0])
 ax.set_xlabel('X')
 
@@ -366,42 +358,3 @@ plt.show()
 
 
 
-
-"""
-###################### ANIMACIÓN MATPLOTLIB 2D ##############################
-"""
-
-
-"""REDISEÑO
-
-OBJETIVOS: 
-    + Visualización completa para un número especificado de ciclos y parámetros 
-            En punto 5
-	- Visualización animada 2D actualizabley que responde a interacción
-            Ya está animada
-    - Visualización animada 3D actualizable y que responde a interacción
-
-PROBLEMAS A SOLUCIONAR: 
-    - Primero graficar animación 2D tal que se vea igual que la 3D anterior
-    - Luego, para cada vez que se actualice el input:
-            - Generar un nuevo set de RR_gen
-            - Generar un nuevo set de puntos de la función.
-
-
-"""
-
-
-"""
-PROBLEMAS A SOLUCIONAR 
-
-+ Preparar Input serie temporal (Tuve que pasar del ODEINT a la clase ODE y hacerlo como 'manual')
-+ Preparar Input de parámetros.  
-+ Velocidad de Animación. Debería ser 60 por min. hasta ahora no lo da. 
-+ Abstraer la posición de la sobreposición (El problema era que las abstracciones me estaban quedando en float, pero las listas sólo reconocen int. Había que sólo transformar el tipo)
-+ Revisar el parámetro 'n' 
-- el tema de la velocidad de sampleo. 
-+ Ordenar el tema de la vairable Z que recibe el ruido. Quizás hacer dos psol. psol sólo que sería la señal sin nada y psol_noise que sería la señal con ruido blanco. 
-+ Cachar como agregar un ruido de 50 Hz!. 
-+ Animar ECG 2D! 
-- FUTURO cachar como colocar patologías! 
-"""
