@@ -24,8 +24,9 @@ from datetime import datetime
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
-n = 10                              #Cantidad de Pulsaciones simuladas
-dt = 0.01                           # En segundos
+n = 8                              #Cantidad de Pulsaciones simuladas
+dt = 0.001                           # En segundos
+FPS = 40
 
 #Control de Artefactos
 Anoise = 0.15                       #Amplitud del Ruido Aleatorio
@@ -34,7 +35,7 @@ Hz_Anoise = 0.05                    #Amplitud de la Interferencia
 
 
 #Variabilidad del Pulso Cardíaco
-hrstd = 5                           #Desviación Estándar de la Frecuencia Cardíaca
+hrstd = 0                           #Desviación Estándar de la Frecuencia Cardíaca
 c1 = 2*m.pi*0.01                    #Desviación Estándar Onda Mayer
 c2 = 2*m.pi*0.01                    #Desviación Estándar Onda RSA
 f1 = 0.1*2*m.pi                     #Frecuencia Central Onda Mayer
@@ -169,7 +170,7 @@ z_values = z
 #plt.ylabel('z')
 #plt.show()
 
-
+"""
 fig_st, ax_st = plt.subplots()
 ax_st.plot(t, z_values)
 
@@ -191,7 +192,7 @@ ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.5), minor = False)
 ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.1), minor = True)
 
 ax_st.set_aspect(0.4)
-
+"""
 
 
 #Gráfico 3D (X, Y, Z)
@@ -214,7 +215,7 @@ mtr = 2 #Monitor Time Range
 data_2d = [t, z_values]
 
 sign, = ax_2d.plot([],[],'g')
-signr, = ax_2d.plot([],[],'g')
+#signr, = ax_2d.plot([],[],'g')
 
 ax_2d.set_xlim([0,mtr])
 ax_2d.set_xlabel('t [s]')
@@ -236,6 +237,9 @@ ax_2d.yaxis.grid(True, which='minor', lw= 0.5)
 xdata1, ydata1 = [], []
 xdata2, ydata2 = [], []
 
+FI = 1 / FPS    #Frame Interval 
+DpF = FI/ dt    #Datos por frame
+
 
 def init():                     #Sin esta función también funciona. Documentación sugiere que es más eficiente. No lo sé
     ax_2d.set_ylim(Amp_ECG*-0.15,Amp_ECG*1.09)
@@ -245,37 +249,45 @@ def init():                     #Sin esta función también funciona. Documentac
     del xdata2[:]
     del ydata2[:]
     sign, = ax_2d.plot([],[])
-    signr,= ax_2d.plot([],[])
+    #signr,= ax_2d.plot([],[])
     return sign,
 
 
-def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
+#def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
+def ecg_beat(num, data, sign, hrmean, dt, mtr, DpF):
+    
+    
     
     t = data[0]
     z = data[1]
     #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
     
     gap = 10    #Separación entre la nueva señal y la anterior. En ms
-    semi_gap = int(gap/2)
+    
+    growth_cursor = int(round(num*DpF - int(gap/2)))
+    #decrease_cursor = num + int(gap/2)
+    
+    #print()
     
     xmin, xmax = ax_2d.get_xlim()
     pos_inf = int(xmin/dt)
     pos_sup = int(xmax/dt)
+
     if pos_sup > len(t)-1:
         pos_sup = len(t)-1
     
     
     
-    xdata1 = t[pos_inf:num-semi_gap]
-    ydata1 = z[pos_inf:num-semi_gap]
+    xdata1 = t[pos_inf:growth_cursor]
+    ydata1 = z[pos_inf:growth_cursor]
     
     
-    if num*dt < mtr:
-        xdata2 = []
-        ydata2 = []
-    else:
-        xdata2 = t[num+semi_gap:pos_sup]
-        ydata2 = z[num+semi_gap-int(mtr/dt):pos_sup-int(mtr/dt)]
+#    if num*dt < mtr:
+#        xdata2 = []
+#        ydata2 = []
+#    else:
+#        xdata2 = t[decrease_cursor:pos_sup]
+#        ydata2 = z[decrease_cursor-int(mtr/dt):pos_sup-int(mtr/dt)]
 
         
     
@@ -288,7 +300,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
         
         ax_2d.figure.canvas.draw()
         
-    elif dt*num > xmax: 
+    elif growth_cursor*dt > xmax: 
         ax_2d.set_xlim(xmin+mtr,xmax+mtr)                
 
         ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.2), minor = False)                
@@ -297,19 +309,21 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
         ax_2d.figure.canvas.draw()
  
     sign.set_data(xdata1,ydata1)
-    signr.set_data(xdata2,ydata2)  
+#    signr.set_data(xdata2,ydata2)  
  
-    return sign, signr
+    return sign, #signr
     
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr), interval=1000*dt, blit=1)
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(psoln)/DpF), init_func=init, fargs = (data_2d,sign,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
+#ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)  
+#ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)
 plt.show()
 
 
 """
 ###################### 7.- ANIMACIÓN MATPLOTLIB 3D ##############################
 """
-
+"""
 fig = plt.figure()
 ax = p3.Axes3D(fig)
 
@@ -363,7 +377,7 @@ ani = animation.FuncAnimation(fig, update, frames=len(psoln), fargs=(data, line,
 
 plt.show()
 
-
+"""
 
 
 """
@@ -381,7 +395,7 @@ OBJETIVOS:
     - Visualización animada 3D actualizable y que responde a interacción
 
 PROBLEMAS A SOLUCIONAR: 
-    - Primero graficar animación 2D tal que se vea igual que la 3D anterior
+    + Primero graficar animación 2D tal que se vea igual que la 3D anterior
     - Luego, para cada vez que se actualice el input:
             - Generar un nuevo set de RR_gen
             - Generar un nuevo set de puntos de la función.
