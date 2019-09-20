@@ -25,6 +25,7 @@ hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
 n = 10                              #Cantidad de Pulsaciones simuladas
+dt = 0.01                           # En segundos
 
 #Control de Artefactos
 Anoise = 0.15                       #Amplitud del Ruido Aleatorio
@@ -42,8 +43,6 @@ f2 = 0.25*2*m.pi                    #Frecuencia Central Onda RSA
 
 #La Morfología del Ciclo ECG se define en el punto 2.- "DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO DE VARIABLES"
 
-sfrr = 1
-dt = 0.01                               # En segundos
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
