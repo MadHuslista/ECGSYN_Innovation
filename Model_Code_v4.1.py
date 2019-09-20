@@ -170,7 +170,7 @@ z_values = z
 #plt.ylabel('z')
 #plt.show()
 
-"""
+
 fig_st, ax_st = plt.subplots()
 ax_st.plot(t, z_values)
 
@@ -192,7 +192,7 @@ ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.5), minor = False)
 ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.1), minor = True)
 
 ax_st.set_aspect(0.4)
-"""
+
 
 
 #Gráfico 3D (X, Y, Z)
@@ -323,7 +323,7 @@ plt.show()
 """
 ###################### 7.- ANIMACIÓN MATPLOTLIB 3D ##############################
 """
-"""
+
 fig = plt.figure()
 ax = p3.Axes3D(fig)
 
@@ -377,7 +377,7 @@ ani = animation.FuncAnimation(fig, update, frames=len(psoln), fargs=(data, line,
 
 plt.show()
 
-"""
+
 
 
 """
