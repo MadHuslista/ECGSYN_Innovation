@@ -215,7 +215,7 @@ mtr = 2 #Monitor Time Range
 data_2d = [t, z_values]
 
 sign, = ax_2d.plot([],[],'g')
-#signr, = ax_2d.plot([],[],'g')
+signr, = ax_2d.plot([],[],'g')
 
 ax_2d.set_xlim([0,mtr])
 ax_2d.set_xlabel('t [s]')
@@ -249,12 +249,12 @@ def init():                     #Sin esta función también funciona. Documentac
     del xdata2[:]
     del ydata2[:]
     sign, = ax_2d.plot([],[])
-    #signr,= ax_2d.plot([],[])
-    return sign,
+    signr,= ax_2d.plot([],[])
+    return sign, signr
 
 
-#def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
-def ecg_beat(num, data, sign, hrmean, dt, mtr, DpF):
+def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
+#def ecg_beat(num, data, sign, hrmean, dt, mtr, DpF):
     
     
     
@@ -265,7 +265,7 @@ def ecg_beat(num, data, sign, hrmean, dt, mtr, DpF):
     gap = 10    #Separación entre la nueva señal y la anterior. En ms
     
     growth_cursor = int(round(num*DpF - int(gap/2)))
-    #decrease_cursor = num + int(gap/2)
+    decrease_cursor = int(round(num*DpF + int(gap/2)))
     
     #print()
     
@@ -282,12 +282,12 @@ def ecg_beat(num, data, sign, hrmean, dt, mtr, DpF):
     ydata1 = z[pos_inf:growth_cursor]
     
     
-#    if num*dt < mtr:
-#        xdata2 = []
-#        ydata2 = []
-#    else:
-#        xdata2 = t[decrease_cursor:pos_sup]
-#        ydata2 = z[decrease_cursor-int(mtr/dt):pos_sup-int(mtr/dt)]
+    if num*dt < mtr:
+        xdata2 = []
+        ydata2 = []
+    else:
+        xdata2 = t[decrease_cursor:pos_sup]
+        ydata2 = z[decrease_cursor-int(mtr/dt):pos_sup-int(mtr/dt)]
 
         
     
@@ -309,12 +309,12 @@ def ecg_beat(num, data, sign, hrmean, dt, mtr, DpF):
         ax_2d.figure.canvas.draw()
  
     sign.set_data(xdata1,ydata1)
-#    signr.set_data(xdata2,ydata2)  
+    signr.set_data(xdata2,ydata2)  
  
-    return sign, #signr
+    return sign, signr
     
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(psoln)/DpF), init_func=init, fargs = (data_2d,sign,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(psoln)/DpF), init_func=init, fargs = (data_2d,sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
 #ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)  
 #ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)
 plt.show()
