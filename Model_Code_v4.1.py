@@ -19,31 +19,31 @@ from datetime import datetime
 ####################### 0.- PARÁMETROS DE CONFIGURACIÓN ####################################
 """
 
-#Parámetros Tacograma
+#Parámetros Generales
 
-Resp_by_min = 15
-hrmean = 60
-hrstd = 5
+hrmean = 60                         #Frecuencia Cardíaca
+Resp_by_min = 15                    #Frecuencia Respiratoria
+Amp_ECG = 1.7                       #Amplitud Máxima ECG
+n = 10                              #Cantidad de Pulsaciones simuladas
+
+#Control de Artefactos
+Anoise = 0.15                       #Amplitud del Ruido Aleatorio
+Hz_Noise = 50                       #Frecuencia de la Interferencia
+Hz_Anoise = 0.05                    #Amplitud de la Interferencia
+
+
+#Variabilidad del Pulso Cardíaco
+hrstd = 5                           #Desviación Estándar de la Frecuencia Cardíaca
+c1 = 2*m.pi*0.01                    #Desviación Estándar Onda Mayer
+c2 = 2*m.pi*0.01                    #Desviación Estándar Onda RSA
+f1 = 0.1*2*m.pi                     #Frecuencia Central Onda Mayer
+f2 = 0.25*2*m.pi                    #Frecuencia Central Onda RSA
+
+
+#La Morfología del Ciclo ECG se define en el punto 2.- "DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO DE VARIABLES"
+
 sfrr = 1
-c1 = 2*m.pi*0.01
-c2 = 2*m.pi*0.01
-f1 = 0.1*2*m.pi
-f2 = 0.25*2*m.pi
-
-
-
-Amp_ECG = 1.7
-Anoise = 0.15                             #Additive uniformly distributed measurement noise [0 mV]
-Hz_Noise = 50
-Hz_Anoise = 0.05
-
-
-
 dt = 0.01                               # En segundos
-n = 10
-
-
-#print(str(datetime.now()))
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
