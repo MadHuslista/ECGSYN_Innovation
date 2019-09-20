@@ -13,7 +13,7 @@ from rr_gen import RR_gen
 from din_fun import dinamic_function
 
 from datetime import datetime
-
+plt.close("all")
 
 """
 ####################### 0.- PARÁMETROS DE CONFIGURACIÓN ####################################
@@ -25,8 +25,8 @@ hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
 n = 8                              #Cantidad de Pulsaciones simuladas
-dt = 0.001                           # En segundos
-FPS = 40
+dt = 0.01                           # En segundos
+FPS = 100
 
 #Control de Artefactos
 Anoise = 0.15                       #Amplitud del Ruido Aleatorio
@@ -254,7 +254,6 @@ def init():                     #Sin esta función también funciona. Documentac
 
 
 def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
-#def ecg_beat(num, data, sign, hrmean, dt, mtr, DpF):
     
     
     
@@ -262,7 +261,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
     z = data[1]
     #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
     
-    gap = 10    #Separación entre la nueva señal y la anterior. En ms
+    gap = 0.04*dt    #Separación entre la nueva señal y la anterior. En ms
     
     growth_cursor = int(round(num*DpF - int(gap/2)))
     decrease_cursor = int(round(num*DpF + int(gap/2)))
@@ -282,7 +281,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
     ydata1 = z[pos_inf:growth_cursor]
     
     
-    if num*dt < mtr:
+    if growth_cursor*dt < mtr:
         xdata2 = []
         ydata2 = []
     else:
