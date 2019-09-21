@@ -344,36 +344,41 @@ ax.set_zlim3d([-0.5, 1.5])
 ax.set_zlabel('Z')
 
 
-def update(num, data, line, liner, hrmean, dt):
+FI_3d = 1 / FPS    #Frame Interval 
+DpF_3d = FI_3d/ dt    #Datos por frame
+
+def update(num, data, line, liner, hrmean, dt, DpF_3d):
     
-    rr_interval = 60/(hrmean*dt)
-    segunda_vuelta = rr_interval*2
+    data_rrinterval = 60/(hrmean*dt)    #Calcula cuantos PUNTOS transcurren en una vuelta
+    segunda_vuelta = data_rrinterval*2  
+
+    upr_cursor = int(num*DpF_3d)
+    downr_cursor = int(num*DpF_3d - data_rrinterval)
     
-    
-    rr_interval = int(rr_interval)    
-    segunda_vuelta = int(segunda_vuelta)
-    
-    if num > segunda_vuelta :
-        line.set_data(data[:2, (num-segunda_vuelta):(num-rr_interval+1)])
-        line.set_3d_properties(data[2, (num-segunda_vuelta):(num-rr_interval+1)])
+    up_cursor = int(num*DpF_3d - data_rrinterval +1)
+    down_cursor = int(num*DpF_3d - segunda_vuelta)
         
-        liner.set_data(data[:2, (num-rr_interval):num])
-        liner.set_3d_properties(data[2, (num-rr_interval):num])
+    if upr_cursor > segunda_vuelta : 
+        line.set_data(data[:2, down_cursor:up_cursor])
+        line.set_3d_properties(data[2, down_cursor:up_cursor])
+        
+        liner.set_data(data[:2, downr_cursor:upr_cursor])
+        liner.set_3d_properties(data[2, downr_cursor:upr_cursor])
         
                        
         return line,liner
 
 
     else:
-        liner.set_data(data[:2, 0:num])
-        liner.set_3d_properties(data[2, 0:num])
+        liner.set_data(data[:2, 0:upr_cursor])
+        liner.set_3d_properties(data[2, 0:upr_cursor])
         
         return line,liner
     
 
 
 
-ani = animation.FuncAnimation(fig, update, frames=len(psoln), fargs=(data, line, liner, hrmean, dt), interval=1000*dt, blit=1)
+ani = animation.FuncAnimation(fig, update, frames=round(len(psoln)/DpF_3d), fargs=(data, line, liner, hrmean, dt, DpF_3d), interval=1000*FI, blit=1)
 
 plt.show()
 
