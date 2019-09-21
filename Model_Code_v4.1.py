@@ -25,8 +25,8 @@ hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
 n = 8                              #Cantidad de Pulsaciones simuladas
-dt = 0.01                           # En segundos
-FPS = 100
+dt = 0.001                           # En segundos
+FPS = 40
 
 #Control de Artefactos
 Anoise = 0.15                       #Amplitud del Ruido Aleatorio
@@ -261,10 +261,11 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
     z = data[1]
     #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
     
-    gap = 0.04*dt    #Separación entre la nueva señal y la anterior. En ms
+    time_gap = 0.05   #Separación entre la nueva señal y la anterior. En [s]
     
-    growth_cursor = int(round(num*DpF - int(gap/2)))
-    decrease_cursor = int(round(num*DpF + int(gap/2)))
+    data_gap = time_gap/dt    #
+    growth_cursor = int(round(num*DpF - int(data_gap/2)))
+    decrease_cursor = int(round(num*DpF + int(data_gap/2)))
     
     #print()
     
