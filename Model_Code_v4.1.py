@@ -13,7 +13,7 @@ from rr_gen import RR_gen
 from din_fun import dinamic_function
 
 from datetime import datetime
-
+plt.close("all")
 
 """
 ####################### 0.- PARÁMETROS DE CONFIGURACIÓN ####################################
@@ -24,8 +24,9 @@ from datetime import datetime
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
-n = 10                              #Cantidad de Pulsaciones simuladas
-dt = 0.01                           # En segundos
+n = 8                              #Cantidad de Pulsaciones simuladas
+dt = 0.001                           # En segundos
+FPS = 40
 
 #Control de Artefactos
 Anoise = 0.15                       #Amplitud del Ruido Aleatorio
@@ -34,7 +35,7 @@ Hz_Anoise = 0.05                    #Amplitud de la Interferencia
 
 
 #Variabilidad del Pulso Cardíaco
-hrstd = 5                           #Desviación Estándar de la Frecuencia Cardíaca
+hrstd = 0                           #Desviación Estándar de la Frecuencia Cardíaca
 c1 = 2*m.pi*0.01                    #Desviación Estándar Onda Mayer
 c2 = 2*m.pi*0.01                    #Desviación Estándar Onda RSA
 f1 = 0.1*2*m.pi                     #Frecuencia Central Onda Mayer
@@ -236,6 +237,9 @@ ax_2d.yaxis.grid(True, which='minor', lw= 0.5)
 xdata1, ydata1 = [], []
 xdata2, ydata2 = [], []
 
+FI = 1 / FPS    #Frame Interval 
+DpF = FI/ dt    #Datos por frame
+
 
 def init():                     #Sin esta función también funciona. Documentación sugiere que es más eficiente. No lo sé
     ax_2d.set_ylim(Amp_ECG*-0.15,Amp_ECG*1.09)
@@ -246,36 +250,44 @@ def init():                     #Sin esta función también funciona. Documentac
     del ydata2[:]
     sign, = ax_2d.plot([],[])
     signr,= ax_2d.plot([],[])
-    return sign,
+    return sign, signr
 
 
-def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
+def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
+    
+    
     
     t = data[0]
     z = data[1]
     #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
     
-    gap = 10    #Separación entre la nueva señal y la anterior. En ms
-    semi_gap = int(gap/2)
+    time_gap = 0.05   #Separación entre la nueva señal y la anterior. En [s]
+    
+    data_gap = time_gap/dt    #
+    growth_cursor = int(round(num*DpF - int(data_gap/2)))
+    decrease_cursor = int(round(num*DpF + int(data_gap/2)))
+    
+    #print()
     
     xmin, xmax = ax_2d.get_xlim()
     pos_inf = int(xmin/dt)
     pos_sup = int(xmax/dt)
+
     if pos_sup > len(t)-1:
         pos_sup = len(t)-1
     
     
     
-    xdata1 = t[pos_inf:num-semi_gap]
-    ydata1 = z[pos_inf:num-semi_gap]
+    xdata1 = t[pos_inf:growth_cursor]
+    ydata1 = z[pos_inf:growth_cursor]
     
     
-    if num*dt < mtr:
+    if growth_cursor*dt < mtr:
         xdata2 = []
         ydata2 = []
     else:
-        xdata2 = t[num+semi_gap:pos_sup]
-        ydata2 = z[num+semi_gap-int(mtr/dt):pos_sup-int(mtr/dt)]
+        xdata2 = t[decrease_cursor:pos_sup]
+        ydata2 = z[decrease_cursor-int(mtr/dt):pos_sup-int(mtr/dt)]
 
         
     
@@ -288,7 +300,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
         
         ax_2d.figure.canvas.draw()
         
-    elif dt*num > xmax: 
+    elif growth_cursor*dt > xmax: 
         ax_2d.set_xlim(xmin+mtr,xmax+mtr)                
 
         ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.2), minor = False)                
@@ -302,7 +314,9 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     return sign, signr
     
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr), interval=1000*dt, blit=1)
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(psoln)/DpF), init_func=init, fargs = (data_2d,sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
+#ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)  
+#ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)
 plt.show()
 
 
@@ -330,36 +344,41 @@ ax.set_zlim3d([-0.5, 1.5])
 ax.set_zlabel('Z')
 
 
-def update(num, data, line, liner, hrmean, dt):
+FI_3d = 1 / FPS    #Frame Interval 
+DpF_3d = FI_3d/ dt    #Datos por frame
+
+def update(num, data, line, liner, hrmean, dt, DpF_3d):
     
-    rr_interval = 60/(hrmean*dt)
-    segunda_vuelta = rr_interval*2
+    data_rrinterval = 60/(hrmean*dt)    #Calcula cuantos PUNTOS transcurren en una vuelta
+    segunda_vuelta = data_rrinterval*2  
+
+    upr_cursor = int(num*DpF_3d)
+    downr_cursor = int(num*DpF_3d - data_rrinterval)
     
-    
-    rr_interval = int(rr_interval)    
-    segunda_vuelta = int(segunda_vuelta)
-    
-    if num > segunda_vuelta :
-        line.set_data(data[:2, (num-segunda_vuelta):(num-rr_interval+1)])
-        line.set_3d_properties(data[2, (num-segunda_vuelta):(num-rr_interval+1)])
+    up_cursor = int(num*DpF_3d - data_rrinterval +1)
+    down_cursor = int(num*DpF_3d - segunda_vuelta)
         
-        liner.set_data(data[:2, (num-rr_interval):num])
-        liner.set_3d_properties(data[2, (num-rr_interval):num])
+    if upr_cursor > segunda_vuelta : 
+        line.set_data(data[:2, down_cursor:up_cursor])
+        line.set_3d_properties(data[2, down_cursor:up_cursor])
+        
+        liner.set_data(data[:2, downr_cursor:upr_cursor])
+        liner.set_3d_properties(data[2, downr_cursor:upr_cursor])
         
                        
         return line,liner
 
 
     else:
-        liner.set_data(data[:2, 0:num])
-        liner.set_3d_properties(data[2, 0:num])
+        liner.set_data(data[:2, 0:upr_cursor])
+        liner.set_3d_properties(data[2, 0:upr_cursor])
         
         return line,liner
     
 
 
 
-ani = animation.FuncAnimation(fig, update, frames=len(psoln), fargs=(data, line, liner, hrmean, dt), interval=1000*dt, blit=1)
+ani = animation.FuncAnimation(fig, update, frames=round(len(psoln)/DpF_3d), fargs=(data, line, liner, hrmean, dt, DpF_3d), interval=1000*FI, blit=1)
 
 plt.show()
 
@@ -381,7 +400,7 @@ OBJETIVOS:
     - Visualización animada 3D actualizable y que responde a interacción
 
 PROBLEMAS A SOLUCIONAR: 
-    - Primero graficar animación 2D tal que se vea igual que la 3D anterior
+    + Primero graficar animación 2D tal que se vea igual que la 3D anterior
     - Luego, para cada vez que se actualice el input:
             - Generar un nuevo set de RR_gen
             - Generar un nuevo set de puntos de la función.
