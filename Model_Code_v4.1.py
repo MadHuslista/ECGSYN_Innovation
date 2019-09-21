@@ -187,7 +187,7 @@ ax_st.yaxis.grid(True, which='minor', lw= 0.5)
 
 ax_st.set_xticks(np.arange(0,t[-1], step=0.2), minor = False)                
 ax_st.set_xticks(np.arange(0,t[-1], step=0.04), minor = True)
-#-
+
 ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.5), minor = False)                
 ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.1), minor = True)
 
@@ -298,7 +298,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
         ax_2d.set_xticks(np.arange(0,mtr, step=0.04), minor = True)
 
         
-        ax_2d.figure.canvas.draw()
+        ax_2d.figure.canvas.draw_idle()
         
     elif growth_cursor*dt > xmax: 
         ax_2d.set_xlim(xmin+mtr,xmax+mtr)                
@@ -306,7 +306,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
         ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.2), minor = False)                
         ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.04), minor = True)
 
-        ax_2d.figure.canvas.draw()
+        ax_2d.figure.canvas.draw_idle()
  
     sign.set_data(xdata1,ydata1)
     signr.set_data(xdata2,ydata2)  
@@ -314,9 +314,8 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
     return sign, signr
     
 
+
 ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(psoln)/DpF), init_func=init, fargs = (data_2d,sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
-#ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)  
-#ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)
 plt.show()
 
 
@@ -395,9 +394,10 @@ plt.show()
 OBJETIVOS: 
     + Visualización completa para un número especificado de ciclos y parámetros 
             En punto 5
-	- Visualización animada 2D actualizabley que responde a interacción
-            Ya está animada
-    - Visualización animada 3D actualizable y que responde a interacción
+	+ Visualización animada 2D 
+    + Visualización animada 3D 
+    - Interacción con anim 2D
+    - Interacción con anim 3D
 
 PROBLEMAS A SOLUCIONAR: 
     + Primero graficar animación 2D tal que se vea igual que la 3D anterior
