@@ -45,18 +45,10 @@ f2 = 0.25*2*m.pi                    #Frecuencia Central Onda RSA
 #La Morfología del Ciclo ECG se define en el punto 2.- "DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO DE VARIABLES"
 
 
-"""
-########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
-"""
+param_gener = [hrmean, Resp_by_min, Amp_ECG, n, dt, FPS]
+param_Artf = [Anoise, Hz_Noise, Hz_Anoise]
 
-rr_times = RR_gen(f1, f2, c1, c2, hrmean, hrstd, n)
 
-rr_axis = []
-cumulative_time = 0
-
-for i in rr_times:
-    cumulative_time += i 
-    rr_axis.append(cumulative_time)
 
 
 """
@@ -91,10 +83,7 @@ b_S = 0.1 * hr_factor
 b_Td = 0.4 * (1/hr_factor)
 b_Tu = 0.2 * hr_factor
 
-RR = rr_times[0]                        #Esta definición está aquí para poder iniciar el empaquetamiento para el ODE. 
-                                        #Si bien 'RR' actúa como constante, como a lo largo del tiempo debe ser actualizada, aquí sería como especificar otro valor inicial 
 
-params = [theta_P, theta_Q, theta_R, theta_S, theta_Td, theta_Tu, a_P, a_Q, a_R, a_S, a_Td, a_Tu, b_P, b_Q, b_R, b_S, b_Td, b_Tu, RR, fresp]
 
 """Valores Iniciales y empaquetamiento"""
 
@@ -107,6 +96,39 @@ y0 = [X0, Y0, Z0]                       #Empaquetamiento de los valores iniciale
 """Construcción del step size para la integración numérica"""
 #dt = 0.01                              #Comentado porque se presenta arriba 
 t = np.arange(0, rr_axis[-1], dt)       #rr_axis[-1] representa al último elemento de rr_axis
+
+
+
+"""
+########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
+"""
+
+rr_times = RR_gen(f1, f2, c1, c2, hrmean, hrstd, n)
+
+rr_axis = []
+cumulative_time = 0
+
+for i in rr_times:
+    cumulative_time += i 
+    rr_axis.append(cumulative_time)
+
+
+"""
+########################### EMPAQUETAMIENTO ########################### 
+"""
+
+RR = rr_times[0]                        #Esta definición está aquí para poder iniciar el empaquetamiento para el ODE. 
+                                        #Si bien 'RR' actúa como constante, como a lo largo del tiempo debe ser actualizada, aquí sería como especificar otro valor inicial 
+
+params = [theta_P, theta_Q, theta_R, theta_S, theta_Td, theta_Tu, a_P, a_Q, a_R, a_S, a_Td, a_Tu, b_P, b_Q, b_R, b_S, b_Td, b_Tu, RR, fresp]
+
+
+
+
+
+
+
+
 
 
 
