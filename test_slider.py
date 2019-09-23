@@ -9,6 +9,7 @@ Created on Sun Aug 25 18:58:29 2019
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons
+plt.close("all")
 
 fig, ax = plt.subplots()
 plt.subplots_adjust(left=0.25, bottom=0.25)
@@ -37,8 +38,25 @@ def update(val):
     freq = sfreq.val
     l.set_ydata(amp*np.sin(2*np.pi*freq*t))
     fig.canvas.draw_idle()
+    print(next(iterat()))
 
+def pp(arg): 
+    print("perro",arg)
 
+n = 1012012
+def iterat(): 
+    while True: 
+        pp(n)
+        yield n 
+"""
+Con esto demostré que: 
+    dentro de un iterador puedo llamar una función, pasarle un argumento nuevo y obtener eso p. 
+
+Necesito: 
+    Que el update altere un valor EN el iterador
+    Y que luego el iterador     
+        
+"""
 sfreq.on_changed(update)
 samp.on_changed(update)
 
