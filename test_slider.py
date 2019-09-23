@@ -53,9 +53,12 @@ Con esto demostré que:
     dentro de un iterador puedo llamar una función, pasarle un argumento nuevo y obtener eso p. 
 
 Necesito: 
-    Que el update altere un valor EN el iterador
-    Y que luego el iterador     
-        
+    Que el update altere un valor global 
+    Y que luego el iterador oucpe ese valor global en el cálculo de los nuevos valores de la función.
+    
+Problema: 
+    Qué tanto demorará? 
+    Probar.
 """
 sfreq.on_changed(update)
 samp.on_changed(update)
