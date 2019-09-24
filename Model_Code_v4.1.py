@@ -24,9 +24,9 @@ plt.close("all")
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
-n = 8                              #Cantidad de Pulsaciones simuladas
+n = 8                               #Cantidad de Pulsaciones simuladas
 dt = 0.001                           # En segundos
-FPS = 40
+FPS = 30
 
 #Control de Artefactos
 Anoise = 0.15                       #Amplitud del Ruido Aleatorio
@@ -35,7 +35,7 @@ Hz_Anoise = 0.05                    #Amplitud de la Interferencia
 
 
 #Variabilidad del Pulso Cardíaco
-hrstd = 0                           #Desviación Estándar de la Frecuencia Cardíaca
+hrstd = 5                           #Desviación Estándar de la Frecuencia Cardíaca
 c1 = 2*m.pi*0.01                    #Desviación Estándar Onda Mayer
 c2 = 2*m.pi*0.01                    #Desviación Estándar Onda RSA
 f1 = 0.1*2*m.pi                     #Frecuencia Central Onda Mayer
@@ -44,11 +44,18 @@ f2 = 0.25*2*m.pi                    #Frecuencia Central Onda RSA
 
 #La Morfología del Ciclo ECG se define en el punto 2.- "DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO DE VARIABLES"
 
+"""
+########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
+"""
 
-param_gener = [hrmean, Resp_by_min, Amp_ECG, n, dt, FPS]
-param_Artf = [Anoise, Hz_Noise, Hz_Anoise]
+rr_times = RR_gen(f1, f2, c1, c2, hrmean, hrstd, n)
 
+rr_axis = []
+cumulative_time = 0
 
+for i in rr_times:
+    cumulative_time += i 
+    rr_axis.append(cumulative_time)
 
 
 """
@@ -99,18 +106,7 @@ t = np.arange(0, rr_axis[-1], dt)       #rr_axis[-1] representa al último eleme
 
 
 
-"""
-########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
-"""
 
-rr_times = RR_gen(f1, f2, c1, c2, hrmean, hrstd, n)
-
-rr_axis = []
-cumulative_time = 0
-
-for i in rr_times:
-    cumulative_time += i 
-    rr_axis.append(cumulative_time)
 
 
 """
@@ -283,7 +279,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
     z = data[1]
     #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
     
-    time_gap = 0.05   #Separación entre la nueva señal y la anterior. En [s]
+    time_gap = 0.01   #Separación entre la nueva señal y la anterior. En [s]
     
     data_gap = time_gap/dt    #
     growth_cursor = int(round(num*DpF - int(data_gap/2)))
@@ -320,7 +316,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
         ax_2d.set_xticks(np.arange(0,mtr, step=0.04), minor = True)
 
         
-        ax_2d.figure.canvas.draw_idle()
+        ax_2d.figure.canvas.draw()
         
     elif growth_cursor*dt > xmax: 
         ax_2d.set_xlim(xmin+mtr,xmax+mtr)                
@@ -328,7 +324,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
         ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.2), minor = False)                
         ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.04), minor = True)
 
-        ax_2d.figure.canvas.draw_idle()
+        ax_2d.figure.canvas.draw()
  
     sign.set_data(xdata1,ydata1)
     signr.set_data(xdata2,ydata2)  
@@ -400,7 +396,6 @@ def update(num, data, line, liner, hrmean, dt, DpF_3d):
 
 
 ani = animation.FuncAnimation(fig, update, frames=round(len(psoln)/DpF_3d), fargs=(data, line, liner, hrmean, dt, DpF_3d), interval=1000*FI, blit=1)
-
 plt.show()
 
 
