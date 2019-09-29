@@ -43,18 +43,21 @@ def pp(i):
     return gen , 2
     #global gen
     #gen = i
-
+i = 2000
 def iterat(n): 
     num = 5
     n = num +n
-    while num < n: 
-        d = pp(num)
-        print(d)
-        yield d
+    while True: 
+        #d = pp(num)
+        #print(d)
+        global gen
+        yield gen
         num += 1    
+        if num > 1000: 
+            num = 0
 
 def animate(h):
-    line.set_ydata((x + h[0] / 200))  # update the data.
+    line.set_ydata((x + h / 200))  # update the data.
     return line,
 
 
