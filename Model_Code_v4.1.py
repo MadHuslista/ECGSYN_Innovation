@@ -251,9 +251,9 @@ z = z + Hz_Anoise*noise
 """
 
 
-x_values = np.array(psoln).T[0]
-y_values = np.array(psoln).T[1]
-z_values = z
+#x_values = np.array(psoln).T[0]
+#y_values = np.array(psoln).T[1]
+#z_values = z
 
 #print(len(z_values))
 
@@ -414,7 +414,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
     
 
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(psoln)/DpF), init_func=init, fargs = (data_2d,sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(t)/DpF), init_func=init, fargs = (data_2d,sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
 plt.show()
 
 
@@ -476,7 +476,7 @@ def update(num, data, line, liner, hrmean, dt, DpF_3d):
 
 
 
-ani = animation.FuncAnimation(fig, update, frames=round(len(psoln)/DpF_3d), fargs=(data, line, liner, hrmean, dt, DpF_3d), interval=1000*FI, blit=1)
+ani = animation.FuncAnimation(fig, update, frames=round(len(t)/DpF_3d), fargs=(data, line, liner, hrmean, dt, DpF_3d), interval=1000*FI, blit=1)
 plt.show()
 
 
