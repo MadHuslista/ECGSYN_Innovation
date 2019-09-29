@@ -69,7 +69,6 @@ def generator(n_frames):
     global Flag
     x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
     while True: 
-        print(round(param_Artf[0], 3))
         if Flag:
             x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
             Flag = False
