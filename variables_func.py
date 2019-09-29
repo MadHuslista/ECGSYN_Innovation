@@ -17,7 +17,7 @@ import math as m
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
-n = 10                              #Cantidad de Pulsaciones simuladas
+n = 2                              #Cantidad de Pulsaciones simuladas
 dt = 0.001                           # En segundos
 FPS = 40
 
