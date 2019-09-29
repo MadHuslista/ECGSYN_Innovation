@@ -38,7 +38,8 @@ plt.close("all")
 
 
 """
-####################### 0.- Obtención de parámetros ####################################
+####################### 0.- Inicialización de Parámetros ####################################
+#######################       (Variables Globales)       ####################################
 """
 
 param_gener     = varfun.param_gener
@@ -50,34 +51,6 @@ a_vals          = varfun.a_vals
 b_vals          = varfun.b_vals
 y0              = varfun.y0
 
-"""
-####################### 1.- Cálculo de datos ####################################
-"""
-
-x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
-
-"""
-####################### 2.1- Elementos Iteración ####################################
-"""
-
-Flag = False
-
-def generator(n_frames): 
-    i = 0
-    data = []
-    global param_Artf
-    global Flag
-    x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
-    while True: 
-        if Flag:
-            x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
-            Flag = False
-        data = [x_val, y_val, z_val, t, i]
-        yield data
-        
-        i += 1
-        if i+1 >= n_frames: 
-            i = 0
 
 """
 ####################### 2.2.- Elementos Slider ####################################
@@ -99,6 +72,34 @@ def update(val):
     
 
 sfreq.on_changed(update)
+"""
+####################### 2.1- Generador para Animación ####################################
+"""
+
+Flag = False
+
+def generator(dpf): 
+    i = 0
+    data = []
+    
+    global param_Artf
+    global Flag
+    global z_m
+    x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
+    while True: 
+        actual_point = int(dpf*i)
+        if Flag:
+            x_val, y_val, z_m, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
+            z_val[actual_point:] = z_m[actual_point:]
+            Flag = False
+        data = [x_val, y_val, z_val, t, i]
+        yield data
+        
+        i += 1
+        n_frames = round(len(t)/DpF)
+        if i+1 >= n_frames: 
+            i = 0
+            z_val = z_m
 
 
 """
@@ -108,14 +109,12 @@ sfreq.on_changed(update)
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 2 #Monitor Time Range
+mtr = 4 #Monitor Time Range
 hrmean = param_gener[0]
 Amp_ECG = param_gener[2]
 FPS = param_gener[5]
 dt  = param_gener[4]
 
-
-data_2d = [t, z_val]
 
 sign, = ax_2d.plot([],[],'g')
 signr, = ax_2d.plot([],[],'g')
@@ -217,9 +216,6 @@ def ecg_beat(data, sign, signr, hrmean, dt, mtr, DpF):
     signr.set_data(xdata2,ydata2)  
  
     return sign, signr
-    
 
-n_frames = round(len(t)/DpF)
-
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = generator(n_frames), init_func=init, fargs = (sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = generator(DpF), init_func=init, fargs = (sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
 plt.show()
