@@ -27,7 +27,7 @@ plt.close("all")
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
-n = 8                              #Cantidad de Pulsaciones simuladas
+n = 4                              #Cantidad de Pulsaciones simuladas
 dt = 0.001                           # En segundos
 FPS = 40
 
@@ -309,7 +309,7 @@ ax_st.set_aspect(0.4)
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 2 #Monitor Time Range
+mtr = 4 #Monitor Time Range
 
 data_2d = [t, z_values]
 
