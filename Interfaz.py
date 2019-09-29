@@ -31,6 +31,7 @@ from rr_gen import RR_gen
 from din_fun import dinamic_function
 from model_func import model
 import variables_func as varfun
+import Slider_Interfaz as slid
 
 from datetime import datetime
 plt.close("all")
@@ -56,22 +57,22 @@ y0              = varfun.y0
 ####################### 2.2.- Elementos Slider ####################################
 """
 
-#Slider 
-fig_s, ax_s = plt.subplots()
-fig_s.subplots_adjust(left=0.25, bottom=0.25)
-axcolor = 'lightgoldenrodyellow'
-axfreq = fig_s.add_axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
-sfreq = Slider(axfreq, 'Freq', 0, 1, valinit=0.15, valstep=0.1)
+slid.fig_gen.show()
 
-def update(val):
+def update_gen(val):
     global param_Artf
     global Flag
     Flag = True
-    param_Artf[0] = sfreq.val
+    param_Artf[0] = slid.sfreq.val
     
-    
+slid.s_hrmean.on_changed(update_gen)
+slid.s_resp.on_changed(update_gen)
+slid.s_Amp_ECG.on_changed(update_gen)
+slid.s_n.on_changed(update_gen)
+slid.s_dt.on_changed(update_gen)
+slid.s_FPS.on_changed(update_gen)    
 
-sfreq.on_changed(update)
+
 """
 ####################### 2.1- Generador para Animación ####################################
 """
@@ -84,7 +85,8 @@ def generator(dpf):
     
     global param_Artf
     global Flag
-    global z_m
+    
+    
     x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
     while True: 
         actual_point = int(dpf*i)
@@ -99,6 +101,7 @@ def generator(dpf):
         n_frames = round(len(t)/DpF)
         if i+1 >= n_frames: 
             i = 0
+            print("g")
             z_val = z_m
 
 
@@ -109,7 +112,7 @@ def generator(dpf):
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 4 #Monitor Time Range
+mtr = 2 #Monitor Time Range
 hrmean = param_gener[0]
 Amp_ECG = param_gener[2]
 FPS = param_gener[5]
