@@ -255,7 +255,9 @@ x_values = np.array(psoln).T[0]
 y_values = np.array(psoln).T[1]
 z_values = z
 
-#x_values, y_values, z_values, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vasl, y0) 
+#print(len(z_values))
+
+x_values, y_values, z_values, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vasl, y0) 
 
 
 
@@ -423,8 +425,8 @@ plt.show()
 fig = plt.figure()
 ax = p3.Axes3D(fig)
 
-data = np.array(psoln).T
-data[2] = z_values
+data = [x_values, y_values, z_values]
+data = np.array(data)
 
 line, = ax.plot([],[],[])
 liner, = ax.plot([],[],[], 'r')
