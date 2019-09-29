@@ -16,6 +16,7 @@ from model_func import model
 from datetime import datetime
 plt.close("all")
 
+"""
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 """
@@ -88,6 +89,7 @@ y0 = [X0, Y0, Z0]
 
 
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+"""
 
 """
 ####################### 0.- PARÁMETROS DE CONFIGURACIÓN ####################################
@@ -97,7 +99,7 @@ y0 = [X0, Y0, Z0]
 
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
-Amp_ECG = 1.7                       #Amplitud Máxima ECG
+Amp_ECG = 4                       #Amplitud Máxima ECG
 n = 8                               #Cantidad de Pulsaciones simuladas
 dt = 0.001                           # En segundos
 FPS = 30
@@ -251,13 +253,13 @@ z = z + Hz_Anoise*noise
 """
 
 
-#x_values = np.array(psoln).T[0]
-#y_values = np.array(psoln).T[1]
-#z_values = z
+x_values = np.array(psoln).T[0]
+y_values = np.array(psoln).T[1]
+z_values = z
 
 #print(len(z_values))
 
-x_values, y_values, z_values, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vasl, y0) 
+#x_values, y_values, z_values, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vasl, y0) 
 
 
 
