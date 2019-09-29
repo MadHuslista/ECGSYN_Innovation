@@ -25,6 +25,7 @@ import mpl_toolkits.mplot3d.axes3d as p3
 
 import matplotlib.pyplot as plt 
 from matplotlib import animation
+from matplotlib.widgets import Slider, Button, RadioButtons
 
 from rr_gen import RR_gen
 from din_fun import dinamic_function
@@ -42,6 +43,7 @@ plt.close("all")
 
 param_gener     = varfun.param_gener
 param_Artf      = varfun.param_Artf
+last_Artf       = param_Artf
 param_HVR       = varfun.param_HVR
 theta_vals      = varfun.theta_vals
 a_vals          = varfun.a_vals
@@ -54,17 +56,65 @@ y0              = varfun.y0
 
 x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
 
+"""
+####################### 2.1- Elementos Iteración ####################################
+"""
+
+Flag = False
+
+def generator(n_frames): 
+    i = 0
+    data = []
+    global param_Artf
+    global Flag
+    x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
+    while True: 
+        print(round(param_Artf[0], 3))
+        if Flag:
+            x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
+            Flag = False
+        data = [x_val, y_val, z_val, t, i]
+        yield data
+        
+        i += 1
+        if i+1 >= n_frames: 
+            i = 0
 
 """
-####################### 2.- Animacióin 2D ####################################
+####################### 2.2.- Elementos Slider ####################################
+"""
+
+#Slider 
+fig_s, ax_s = plt.subplots()
+fig_s.subplots_adjust(left=0.25, bottom=0.25)
+axcolor = 'lightgoldenrodyellow'
+axfreq = fig_s.add_axes([0.25, 0.1, 0.65, 0.03], facecolor=axcolor)
+sfreq = Slider(axfreq, 'Freq', 0, 1, valinit=0.15, valstep=0.1)
+
+def update(val):
+    global param_Artf
+    global Flag
+    Flag = True
+    param_Artf[0] = sfreq.val
+    
+    
+
+sfreq.on_changed(update)
+
+
+"""
+####################### 3.- Animacióin 2D ####################################
 """
 
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
 mtr = 2 #Monitor Time Range
+hrmean = param_gener[0]
+Amp_ECG = param_gener[2]
 FPS = param_gener[5]
 dt  = param_gener[4]
+
 
 data_2d = [t, z_val]
 
@@ -107,12 +157,14 @@ def init():                     #Sin esta función también funciona. Documentac
     return sign, signr
 
 
-def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
+def ecg_beat(data, sign, signr, hrmean, dt, mtr, DpF):
     
     
-    
-    t = data[0]
-    z = data[1]
+    num = data[4]
+    t = data[3]
+    z = data[2]
+    #t = data[0]
+    #z = data[1]
     #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
     
     time_gap = 0.01   #Separación entre la nueva señal y la anterior. En [s]
@@ -168,6 +220,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
     return sign, signr
     
 
+n_frames = round(len(t)/DpF)
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(psoln)/DpF), init_func=init, fargs = (data_2d,sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = generator(n_frames), init_func=init, fargs = (sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
 plt.show()
