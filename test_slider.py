@@ -40,26 +40,6 @@ def update(val):
     fig.canvas.draw_idle()
     print(next(iterat()))
 
-def pp(arg): 
-    print("perro",arg)
-
-n = 1012012
-def iterat(): 
-    while True: 
-        pp(n)
-        yield n 
-"""
-Con esto demostré que: 
-    dentro de un iterador puedo llamar una función, pasarle un argumento nuevo y obtener eso p. 
-
-Necesito: 
-    Que el update altere un valor global 
-    Y que luego el iterador oucpe ese valor global en el cálculo de los nuevos valores de la función.
-    
-Problema: 
-    Qué tanto demorará? 
-    Probar.
-"""
 sfreq.on_changed(update)
 samp.on_changed(update)
 
@@ -82,4 +62,37 @@ def colorfunc(label):
     
 radio.on_clicked(colorfunc)
 
+#########
+
+def pp(arg): 
+    print("perro",arg)
+
+n = 1012012
+def iterat(): 
+    while True: 
+        pp(n)
+        yield n 
+
+
+
+
+
+
+
+
+
+
 plt.show()
+
+"""
+Con esto demostré que: 
+    dentro de un iterador puedo llamar una función, pasarle un argumento nuevo y obtener eso p. 
+
+Necesito: 
+    Que el update altere un valor global 
+    Y que luego el iterador oucpe ese valor global en el cálculo de los nuevos valores de la función.
+    
+Problema: 
+    Qué tanto demorará? 
+    Probar.
+"""
