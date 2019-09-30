@@ -18,22 +18,15 @@ Luego, crear un botón de "GENERAR",
 
 
 
-from scipy.integrate import ode
+
 import math as m
 import numpy as np
-import mpl_toolkits.mplot3d.axes3d as p3
-
 import matplotlib.pyplot as plt 
 from matplotlib import animation
-from matplotlib.widgets import Slider, Button, RadioButtons
-
-from rr_gen import RR_gen
-from din_fun import dinamic_function
 from model_func import model
 import variables_func as varfun
 import Slider_Interfaz as slid
 
-from datetime import datetime
 plt.close("all")
 slid.plt.close("all")
 
