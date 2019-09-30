@@ -99,7 +99,7 @@ y0 = [X0, Y0, Z0]
 
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
-Amp_ECG = 4                       #Amplitud Máxima ECG
+Amp_ECG = 1.7                       #Amplitud Máxima ECG
 n = 8                               #Cantidad de Pulsaciones simuladas
 dt = 0.001                           # En segundos
 FPS = 30
@@ -245,7 +245,6 @@ for i in range(len(z)):
     
 noise = np.sin(2*np.pi*t*Hz_Noise)
 z = z + Hz_Anoise*noise
-
 #print(str(datetime.now()))
 
 """
