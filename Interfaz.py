@@ -35,7 +35,7 @@ import Slider_Interfaz as slid
 
 from datetime import datetime
 plt.close("all")
-
+slid.plt.close("all")
 
 
 """
@@ -45,7 +45,6 @@ plt.close("all")
 
 param_gener     = varfun.param_gener
 param_Artf      = varfun.param_Artf
-last_Artf       = param_Artf
 param_HVR       = varfun.param_HVR
 theta_vals      = varfun.theta_vals
 a_vals          = varfun.a_vals
@@ -68,7 +67,6 @@ slid.fig_Artf.show()
 slid.sim_Artf.on_clicked(update_Artf)
 
 
-
 def update_gen(event):
     global param_gener
     global Flag
@@ -81,6 +79,19 @@ def update_gen(event):
     Flag = True
 slid.fig_gen.show()    
 slid.sim_gen.on_clicked(update_gen)
+
+def update_HVR(event):
+    global param_HVR
+    global Flag
+    param_HVR[0] = slid.s_hrstd.val
+    param_HVR[1] = 2*m.pi*slid.s_c1.val
+    param_HVR[2] = 2*m.pi*slid.s_c2.val
+    param_HVR[3] = 2*m.pi*slid.s_f1.val
+    param_HVR[4] = 2*m.pi*slid.s_f2.val
+    Flag = True
+
+slid.fig_HVR.show()
+slid.sim_HVR.on_clicked(update_HVR)
 
 
 """
