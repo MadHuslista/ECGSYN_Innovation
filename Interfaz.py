@@ -6,34 +6,16 @@ Created on Mon Sep 23 13:43:59 2019
 @author: meyerhof
 """
 
-"""
-Llevar todo el Model  a una función. 
-Aquí armar luego, varias sliders. 
-Cada slider para cada parámetro 
-    - Aquí armar el circulito de las posiciones. 
-    - Quizás armar una gaussiana genérica para setear amplitud y duración 
-Luego, crear un botón de "GENERAR", 
-    - Aquí en el update llamar a todo el Model con todo lo seteado
-""" 
-
-
-
-from scipy.integrate import ode
 import math as m
 import numpy as np
-import mpl_toolkits.mplot3d.axes3d as p3
 
 import matplotlib.pyplot as plt 
 from matplotlib import animation
-from matplotlib.widgets import Slider, Button, RadioButtons
 
-from rr_gen import RR_gen
-from din_fun import dinamic_function
 from model_func import model
 import variables_func as varfun
 import Slider_Interfaz as slid
 
-from datetime import datetime
 plt.close("all")
 slid.plt.close("all")
 
@@ -50,6 +32,7 @@ theta_vals      = varfun.theta_vals
 a_vals          = varfun.a_vals
 b_vals          = varfun.b_vals
 y0              = varfun.y0
+
 
 
 """
