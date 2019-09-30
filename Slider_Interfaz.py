@@ -143,6 +143,7 @@ s_tTu  = Slider(ax_tTu, 'Tu',   -1, 1, valinit=5/9, valstep=0.01)
 sim_th = Button(ax_sim_th, 'Simular', color=axcolor, hovercolor='0.975')
 rst_th = Button(ax_rst_th, 'Reset', color=axcolor, hovercolor='0.975')
 
+
 p_P  = ax_circle.scatter(np.cos(-1/3*m.pi), np.sin(-1/3*m.pi))
 p_Q  = ax_circle.scatter(np.cos(-1/12*m.pi), np.sin(-1/12*m.pi))
 p_R  = ax_circle.scatter(np.cos(0), np.sin(0))
