@@ -22,7 +22,9 @@ from matplotlib.widgets import Slider, Button
 axcolor = 'lightgoldenrodyellow'
 
 #Ventana para control de Parámetros Generales
-fig_gen = plt.figure(figsize=[10,2])
+
+fog = plt.figure(figsize=[10,2])
+fig_gen = fog
 
 ax_hrmean       = fig_gen.add_axes([0.25, 0.15, 0.65, 0.05], facecolor=axcolor)
 ax_Resp_by_min  = fig_gen.add_axes([0.25, 0.25, 0.65, 0.05], facecolor=axcolor)
@@ -59,6 +61,7 @@ rst_gen.on_clicked(reset_gen)
 
 #Ventana para control de Parámetros Artefactos
 fig_Artf = plt.figure(figsize=[8,1])
+#fig_Artf = fig_gen
 
 ax_Anoise       = fig_Artf.add_axes([0.25, 0.25, 0.65, 0.1], facecolor=axcolor)
 ax_Hz_noise     = fig_Artf.add_axes([0.25, 0.5, 0.65, 0.1], facecolor=axcolor)
