@@ -89,9 +89,21 @@ def update_HVR(event):
     param_HVR[3] = 2*m.pi*slid.s_f1.val
     param_HVR[4] = 2*m.pi*slid.s_f2.val
     Flag = True
-
 slid.fig_HVR.show()
 slid.sim_HVR.on_clicked(update_HVR)
+
+def update_theta(event): 
+    global theta_vals
+    global Flag
+    theta_vals[0] = slid.s_tP.val   *m.pi
+    theta_vals[1] = slid.s_tQ.val   *m.pi
+    theta_vals[2] = slid.s_tR.val   *m.pi
+    theta_vals[3] = slid.s_tS.val   *m.pi
+    theta_vals[4] = slid.s_tTd.val  *m.pi
+    theta_vals[5] = slid.s_tTu.val  *m.pi
+    Flag = True
+slid.fig_theta.show()
+slid.sim_th.on_clicked(update_theta)
 
 
 """
