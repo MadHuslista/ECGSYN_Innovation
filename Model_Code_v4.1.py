@@ -11,9 +11,13 @@ from matplotlib import animation
 
 from rr_gen import RR_gen
 from din_fun import dinamic_function
+from model_func import model
 
 from datetime import datetime
 plt.close("all")
+
+"""
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 """
 ####################### 0.- PARÁMETROS DE CONFIGURACIÓN ####################################
@@ -24,7 +28,7 @@ plt.close("all")
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
-n = 8                              #Cantidad de Pulsaciones simuladas
+n = 4                              #Cantidad de Pulsaciones simuladas
 dt = 0.001                           # En segundos
 FPS = 40
 
@@ -42,8 +46,79 @@ f1 = 0.1*2*m.pi                     #Frecuencia Central Onda Mayer
 f2 = 0.25*2*m.pi                    #Frecuencia Central Onda RSA
 
 
-#La Morfología del Ciclo ECG se define en el punto 2.- "DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO DE VARIABLES"
+#Posición angular de cada Peak
+theta_P = -(1/3)*m.pi 
+theta_Q = -(1/12)*m.pi 
+theta_R = 0
+theta_S = (1/12)*m.pi 
+theta_Td = ((5/9)-(1/60))*m.pi 
+theta_Tu = (5/9)*m.pi 
 
+#Determina el alto de cada peak
+a_P = 0.8
+a_Q = -5
+a_R = 30
+a_S = -7.5
+a_Td = 0.5
+a_Tu = 0.75
+
+
+#Determina la duración de cada peak 
+b_P = 0.2 
+b_Q = 0.1
+b_R = 0.1
+b_S = 0.1 
+b_Td = 0.4 
+b_Tu = 0.2 
+
+
+#Valores Iniciales y empaquetamiento                                     
+X0 = 1
+Y0 = 0
+Z0 = 0.04
+
+#Empaquetamiento 
+param_gener = [hrmean, Resp_by_min, Amp_ECG, n, dt, FPS]
+param_Artf  = [Anoise, Hz_Noise, Hz_Anoise]
+param_HVR   = [hrstd, c1, c2, f1, f2]
+
+theta_vals  = [theta_P, theta_Q, theta_R, theta_S, theta_Td, theta_Tu]
+a_vals      = [a_P, a_Q, a_R, a_S, a_Td, a_Tu]
+b_vasl      = [b_P, b_Q, b_R, b_S, b_Td, b_Tu]
+y0 = [X0, Y0, Z0] 
+
+
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+"""
+
+"""
+####################### 0.- PARÁMETROS DE CONFIGURACIÓN ####################################
+"""
+
+#Parámetros Generales
+
+hrmean = 60                         #Frecuencia Cardíaca
+Resp_by_min = 15                    #Frecuencia Respiratoria
+Amp_ECG = 1.7                       #Amplitud Máxima ECG
+n = 8                               #Cantidad de Pulsaciones simuladas
+dt = 0.001                           # En segundos
+FPS = 30
+
+#Control de Artefactos
+Anoise = 0.15                       #Amplitud del Ruido Aleatorio
+Hz_Noise = 50                       #Frecuencia de la Interferencia
+Hz_Anoise = 0.05                    #Amplitud de la Interferencia
+
+
+#Variabilidad del Pulso Cardíaco
+hrstd = 5                           #Desviación Estándar de la Frecuencia Cardíaca
+c1 = 2*m.pi*0.01                    #Desviación Estándar Onda Mayer
+c2 = 2*m.pi*0.01                    #Desviación Estándar Onda RSA
+f1 = 0.1*2*m.pi                     #Frecuencia Central Onda Mayer
+f2 = 0.25*2*m.pi                    #Frecuencia Central Onda RSA
+
+
+#La Morfología del Ciclo ECG se define en el punto 2.- "DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO DE VARIABLES"
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -91,10 +166,7 @@ b_S = 0.1 * hr_factor
 b_Td = 0.4 * (1/hr_factor)
 b_Tu = 0.2 * hr_factor
 
-RR = rr_times[0]                        #Esta definición está aquí para poder iniciar el empaquetamiento para el ODE. 
-                                        #Si bien 'RR' actúa como constante, como a lo largo del tiempo debe ser actualizada, aquí sería como especificar otro valor inicial 
 
-params = [theta_P, theta_Q, theta_R, theta_S, theta_Td, theta_Tu, a_P, a_Q, a_R, a_S, a_Td, a_Tu, b_P, b_Q, b_R, b_S, b_Td, b_Tu, RR, fresp]
 
 """Valores Iniciales y empaquetamiento"""
 
@@ -107,6 +179,28 @@ y0 = [X0, Y0, Z0]                       #Empaquetamiento de los valores iniciale
 """Construcción del step size para la integración numérica"""
 #dt = 0.01                              #Comentado porque se presenta arriba 
 t = np.arange(0, rr_axis[-1], dt)       #rr_axis[-1] representa al último elemento de rr_axis
+
+
+
+
+
+
+"""
+########################### EMPAQUETAMIENTO ########################### 
+"""
+
+RR = rr_times[0]                        #Esta definición está aquí para poder iniciar el empaquetamiento para el ODE. 
+                                        #Si bien 'RR' actúa como constante, como a lo largo del tiempo debe ser actualizada, aquí sería como especificar otro valor inicial 
+
+params = [theta_P, theta_Q, theta_R, theta_S, theta_Td, theta_Tu, a_P, a_Q, a_R, a_S, a_Td, a_Tu, b_P, b_Q, b_R, b_S, b_Td, b_Tu, RR, fresp]
+
+
+
+
+
+
+
+
 
 
 
@@ -151,7 +245,6 @@ for i in range(len(z)):
     
 noise = np.sin(2*np.pi*t*Hz_Noise)
 z = z + Hz_Anoise*noise
-
 #print(str(datetime.now()))
 
 """
@@ -162,6 +255,13 @@ z = z + Hz_Anoise*noise
 x_values = np.array(psoln).T[0]
 y_values = np.array(psoln).T[1]
 z_values = z
+
+#print(len(z_values))
+
+#x_values, y_values, z_values, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vasl, y0) 
+
+
+
 
 """Gráfico 2D (t, Z)"""
 #plt.figure()
@@ -187,7 +287,7 @@ ax_st.yaxis.grid(True, which='minor', lw= 0.5)
 
 ax_st.set_xticks(np.arange(0,t[-1], step=0.2), minor = False)                
 ax_st.set_xticks(np.arange(0,t[-1], step=0.04), minor = True)
-#-
+
 ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.5), minor = False)                
 ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.1), minor = True)
 
@@ -210,7 +310,7 @@ ax_st.set_aspect(0.4)
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 2 #Monitor Time Range
+mtr = 4 #Monitor Time Range
 
 data_2d = [t, z_values]
 
@@ -261,7 +361,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
     z = data[1]
     #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
     
-    time_gap = 0.05   #Separación entre la nueva señal y la anterior. En [s]
+    time_gap = 0.01   #Separación entre la nueva señal y la anterior. En [s]
     
     data_gap = time_gap/dt    #
     growth_cursor = int(round(num*DpF - int(data_gap/2)))
@@ -314,9 +414,8 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
     return sign, signr
     
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(psoln)/DpF), init_func=init, fargs = (data_2d,sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
-#ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)  
-#ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign,hrmean,dt, mtr, DpF), interval=dt*1000, blit=1)
+
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(t)/DpF), init_func=init, fargs = (data_2d,sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
 plt.show()
 
 
@@ -327,8 +426,8 @@ plt.show()
 fig = plt.figure()
 ax = p3.Axes3D(fig)
 
-data = np.array(psoln).T
-data[2] = z_values
+data = [x_values, y_values, z_values]
+data = np.array(data)
 
 line, = ax.plot([],[],[])
 liner, = ax.plot([],[],[], 'r')
@@ -378,8 +477,7 @@ def update(num, data, line, liner, hrmean, dt, DpF_3d):
 
 
 
-ani = animation.FuncAnimation(fig, update, frames=round(len(psoln)/DpF_3d), fargs=(data, line, liner, hrmean, dt, DpF_3d), interval=1000*FI, blit=1)
-
+ani = animation.FuncAnimation(fig, update, frames=round(len(t)/DpF_3d), fargs=(data, line, liner, hrmean, dt, DpF_3d), interval=1000*FI, blit=1)
 plt.show()
 
 
@@ -395,9 +493,10 @@ plt.show()
 OBJETIVOS: 
     + Visualización completa para un número especificado de ciclos y parámetros 
             En punto 5
-	- Visualización animada 2D actualizabley que responde a interacción
-            Ya está animada
-    - Visualización animada 3D actualizable y que responde a interacción
+	+ Visualización animada 2D 
+    + Visualización animada 3D 
+    - Interacción con anim 2D
+    - Interacción con anim 3D
 
 PROBLEMAS A SOLUCIONAR: 
     + Primero graficar animación 2D tal que se vea igual que la 3D anterior
