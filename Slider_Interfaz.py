@@ -31,6 +31,7 @@ ax_n            = fig_gen.add_axes([0.25, 0.45, 0.65, 0.05], facecolor=axcolor)
 ax_dt           = fig_gen.add_axes([0.25, 0.55, 0.65, 0.05], facecolor=axcolor)
 ax_FPS          = fig_gen.add_axes([0.25, 0.65, 0.65, 0.05], facecolor=axcolor)
 ax_sim_gen      = fig_gen.add_axes([0.8, 0.020, 0.1, 0.1], facecolor=axcolor)
+ax_rst_gen      = fig_gen.add_axes([0.25, 0.020, 0.1, 0.1], facecolor=axcolor)
 
 
 s_hrmean    = Slider(ax_hrmean, 'Frecuencia Cardíaca Promedio', 20, 200, valinit=60, valstep=1)
@@ -40,7 +41,17 @@ s_n         = Slider(ax_n, 'Pulsaciones Simuladas', 1, 100, valinit=15, valstep=
 s_dt        = Slider(ax_dt, 'Frecuencia de Muestreo 10^x',1,4, valinit=3, valstep=1)
 s_FPS       = Slider(ax_FPS, 'Cuadros por Segundo', 25, 50, valinit=30, valstep=5)
 sim_gen     = Button(ax_sim_gen, 'Simular', color=axcolor, hovercolor='0.975')
+rst_gen     = Button(ax_rst_gen, 'Reset', color=axcolor, hovercolor='0.975')
 
+def reset_gen(event):
+    s_hrmean.reset()
+    s_resp.reset()
+    s_Amp_ECG.reset()
+    s_n.reset()
+    s_dt.reset()
+    s_FPS.reset()
+    
+rst_gen.on_clicked(reset_gen)
 
 """
 ####################### 0.- PARÁMETROS ARTEFACTOS ####################################
@@ -53,12 +64,20 @@ ax_Anoise       = fig_Artf.add_axes([0.25, 0.25, 0.65, 0.1], facecolor=axcolor)
 ax_Hz_noise     = fig_Artf.add_axes([0.25, 0.5, 0.65, 0.1], facecolor=axcolor)
 ax_AHznoise     = fig_Artf.add_axes([0.25, 0.75, 0.65, 0.1], facecolor=axcolor)
 ax_sim_Artf     = fig_Artf.add_axes([0.8, 0.020, 0.1, 0.20], facecolor=axcolor)
+ax_rst_Artf     = fig_Artf.add_axes([0.25, 0.020, 0.1, 0.2], facecolor=axcolor)
 
 s_Anoise    = Slider(ax_Anoise, 'Amplitud Ruido Aleatorio', 0, 1, valinit=0.15, valstep=0.01)
 s_Hznoise   = Slider(ax_Hz_noise, 'Frecuencia Interferencia', 0, 100, valinit=50, valstep=1)
 s_AHznoise  = Slider(ax_AHznoise, 'Amplitud Interferencia', 0, 1, valinit=0.15, valstep=0.01)
 sim_Artf    = Button(ax_sim_Artf, 'Simular', color=axcolor, hovercolor='0.975')
+rst_Artf    = Button(ax_rst_Artf, 'Reset', color=axcolor, hovercolor='0.975')
 
+def reset_Artf(event):
+    s_Anoise.reset()
+    s_Hznoise.reset()
+    s_AHznoise.reset()
+    
+rst_Artf.on_clicked(reset_Artf)
 
 """
 ####################### 0.- PARÁMETROS HVR ####################################
@@ -72,6 +91,7 @@ ax_c2       = fig_HVR.add_axes([0.25, 0.5, 0.65, 0.1], facecolor=axcolor)
 ax_f1       = fig_HVR.add_axes([0.25, 0.7, 0.65, 0.1], facecolor=axcolor)
 ax_f2       = fig_HVR.add_axes([0.25, 0.8, 0.65, 0.1], facecolor=axcolor)
 ax_sim_HVR  = fig_HVR.add_axes([0.8, 0.020, 0.1, 0.20], facecolor=axcolor)
+ax_rst_HVR  = fig_HVR.add_axes([0.25, 0.020, 0.1, 0.1], facecolor=axcolor)
 
 s_hrstd     = Slider(ax_hrstd, 'Desv.Est. Frec. Cardíaca', 0, 10, valinit=0., valstep=0.1)
 s_c1        = Slider(ax_c1, 'Desv.Est. Onda Mayer', 0, 0.5, valinit=0.01, valstep=0.01)
@@ -79,7 +99,16 @@ s_c2        = Slider(ax_c2, 'Desv.Est. Onda RSA', 0, 0.5, valinit=0.15, valstep=
 s_f1        = Slider(ax_f1, 'Frecuencia Central Onda Mayer', 0, 0.5, valinit=0.1, valstep=0.01)
 s_f2        = Slider(ax_f2, 'Frecuencia Central Onda RSA', 0, 0.5, valinit=0.25, valstep=0.01)
 sim_HVR     = Button(ax_sim_HVR, 'Simular', color=axcolor, hovercolor='0.975')
+rst_HVR     = Button(ax_rst_HVR, 'Reset', color=axcolor, hovercolor='0.975')
 
+def reset_HVR(event):
+    s_hrstd.reset()
+    s_c1.reset()
+    s_c2.reset()
+    s_f1.reset()
+    s_f2.reset()
+    
+rst_HVR.on_clicked(reset_HVR)
 
 """
 ####################### 0.- PARÁMETROS THETA ####################################
@@ -99,7 +128,8 @@ ax_tR       = fig_theta.add_axes([0.05, 0.5, 0.4, 0.05], facecolor=axcolor)
 ax_tS       = fig_theta.add_axes([0.05, 0.4, 0.4, 0.05], facecolor=axcolor)
 ax_tTd      = fig_theta.add_axes([0.05, 0.3, 0.4, 0.05], facecolor=axcolor)  
 ax_tTu      = fig_theta.add_axes([0.05, 0.2, 0.4, 0.05], facecolor=axcolor)
-ax_sim_th   = fig_theta.add_axes([0.05, 0.1, 0.1, 0.05], facecolor=axcolor)
+ax_sim_th   = fig_theta.add_axes([0.35, 0.1, 0.1, 0.05], facecolor=axcolor)
+ax_rst_th   = fig_theta.add_axes([0.05, 0.1, 0.1, 0.05], facecolor=axcolor)
 
 s_tP   = Slider(ax_tP, 'P',     -1, 1, valinit=-1/3, valstep=0.01)
 s_tQ   = Slider(ax_tQ, 'Q',     -1, 1, valinit=-1/12, valstep=0.01)
@@ -108,6 +138,7 @@ s_tS   = Slider(ax_tS, 'S',     -1, 1, valinit=1/12, valstep=0.01)
 s_tTd  = Slider(ax_tTd, 'Td',   -1, 1, valinit=(5/9 - 1/60), valstep=0.01)
 s_tTu  = Slider(ax_tTu, 'Tu',   -1, 1, valinit=5/9, valstep=0.01)
 sim_th = Button(ax_sim_th, 'Simular', color=axcolor, hovercolor='0.975')
+rst_th = Button(ax_rst_th, 'Reset', color=axcolor, hovercolor='0.975')
 
 p_P  = ax_circle.scatter(np.cos(-1/3*m.pi), np.sin(-1/3*m.pi))
 p_Q  = ax_circle.scatter(np.cos(-1/12*m.pi), np.sin(-1/12*m.pi))
@@ -156,6 +187,16 @@ s_tS.on_changed(update_circle)
 s_tTd.on_changed(update_circle)
 s_tTu.on_changed(update_circle)
 
+def reset_th(event):
+    s_tP.reset()
+    s_tQ.reset()
+    s_tR.reset()
+    s_tS.reset()
+    s_tTd.reset()
+    s_tTu.reset()
+    
+rst_th.on_clicked(reset_th)
+
 """
 ####################### 0.- PARÁMETROS GAUSS ####################################
 """
@@ -202,7 +243,8 @@ ax_gbS  = fig_gauss.add_axes([0.55, 0.28, 0.4, 0.05], facecolor=axcolor)
 ax_gbTd = fig_gauss.add_axes([0.55, 0.19, 0.4, 0.05], facecolor=axcolor)
 ax_gbTu = fig_gauss.add_axes([0.55, 0.1, 0.4, 0.05], facecolor=axcolor)
 
-ax_sim_g   = fig_gauss.add_axes([0.05, 0.02, 0.1, 0.05], facecolor=axcolor)
+ax_sim_g   = fig_gauss.add_axes([0.85, 0.02, 0.1, 0.05], facecolor=axcolor)
+ax_rst_g   = fig_gauss.add_axes([0.05, 0.02, 0.1, 0.05], facecolor=axcolor)
 
 s_gaP     = Slider(ax_gaP, 'P', -20, 40, valinit=0.8, valstep=0.1)
 s_gaQ     = Slider(ax_gaQ, 'Q', -20, 40, valinit=-5, valstep=0.1)
@@ -219,6 +261,7 @@ s_gbTd     = Slider(ax_gbTd, 'Td', 0.1, 1.5, valinit=0.4, valstep=0.1)
 s_gbTu     = Slider(ax_gbTu, 'Tu', 0.1, 1.5, valinit=0.2, valstep=0.1)
 
 sim_g = Button(ax_sim_g, 'Simular', color=axcolor, hovercolor='0.975')
+rst_g = Button(ax_rst_g, 'Reset', color=axcolor, hovercolor='0.975')
 
 def update_gauss(val):
     hr_factor = np.sqrt(s_hrmean.val/60)
@@ -256,3 +299,20 @@ s_gbR.on_changed(update_gauss)
 s_gbS.on_changed(update_gauss)
 s_gbTd.on_changed(update_gauss)
 s_gbTu.on_changed(update_gauss)
+
+def reset_g(event):
+    s_gaP.reset()
+    s_gaQ.reset()
+    s_gaR.reset()
+    s_gaS.reset()
+    s_gaTd.reset()
+    s_gaTu.reset()
+    
+    s_gbP.reset()
+    s_gbQ.reset()
+    s_gbR.reset()
+    s_gbS.reset()
+    s_gbTd.reset()
+    s_gbTu.reset()
+    
+rst_g.on_clicked(reset_g)
