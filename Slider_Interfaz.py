@@ -37,9 +37,14 @@ s_hrmean    = Slider(ax_hrmean, 'Frecuencia Cardíaca Promedio', 20, 200, valini
 s_resp      = Slider(ax_Resp_by_min, 'Frecuencia Respiratoria Promedio', 0, 70, valinit=15, valstep=1)
 s_Amp_ECG   = Slider(ax_Amp_ECG, 'Amplitud Máxima ECG', 0, 5, valinit=1.7, valstep=0.1)
 s_n         = Slider(ax_n, 'Pulsaciones Simuladas', 1, 100, valinit=15, valstep=1)
-s_dt        = Slider(ax_dt, 'Frecuencia de Muestreo 10^x',0,5, valinit=3, valstep=1)
-s_FPS       = Slider(ax_FPS, 'Cuadros por Segundo', 1, 100, valinit=40, valstep=1)
+s_dt        = Slider(ax_dt, 'Frecuencia de Muestreo 10^x',1,4, valinit=3, valstep=1)
+s_FPS       = Slider(ax_FPS, 'Cuadros por Segundo', 25, 50, valinit=30, valstep=5)
 sim_gen     = Button(ax_sim_gen, 'Simular', color=axcolor, hovercolor='0.975')
+
+
+"""
+####################### 0.- PARÁMETROS ARTEFACTOS ####################################
+"""
 
 #Ventana para control de Parámetros Artefactos
 fig_Artf = plt.figure(figsize=[8,1])
@@ -54,6 +59,10 @@ s_Hznoise   = Slider(ax_Hz_noise, 'Frecuencia Interferencia', 0, 100, valinit=50
 s_AHznoise  = Slider(ax_AHznoise, 'Amplitud Interferencia', 0, 1, valinit=0.15, valstep=0.01)
 sim_Artf    = Button(ax_sim_Artf, 'Simular', color=axcolor, hovercolor='0.975')
 
+
+"""
+####################### 0.- PARÁMETROS HVR ####################################
+"""
 #Ventana para control de Parámetros HVR
 fig_HVR = plt.figure(figsize=[8,1])
 
@@ -64,13 +73,17 @@ ax_f1       = fig_HVR.add_axes([0.25, 0.7, 0.65, 0.1], facecolor=axcolor)
 ax_f2       = fig_HVR.add_axes([0.25, 0.8, 0.65, 0.1], facecolor=axcolor)
 ax_sim_HVR  = fig_HVR.add_axes([0.8, 0.020, 0.1, 0.20], facecolor=axcolor)
 
-s_hrstd     = Slider(ax_hrstd, 'Desv.Est. Frec. Cardíaca', 0, 1, valinit=0., valstep=0.01)
+s_hrstd     = Slider(ax_hrstd, 'Desv.Est. Frec. Cardíaca', 0, 10, valinit=0., valstep=0.1)
 s_c1        = Slider(ax_c1, 'Desv.Est. Onda Mayer', 0, 0.5, valinit=0.01, valstep=0.01)
 s_c2        = Slider(ax_c2, 'Desv.Est. Onda RSA', 0, 0.5, valinit=0.15, valstep=0.01)
 s_f1        = Slider(ax_f1, 'Frecuencia Central Onda Mayer', 0, 0.5, valinit=0.1, valstep=0.01)
 s_f2        = Slider(ax_f2, 'Frecuencia Central Onda RSA', 0, 0.5, valinit=0.25, valstep=0.01)
 sim_HVR     = Button(ax_sim_HVR, 'Simular', color=axcolor, hovercolor='0.975')
 
+
+"""
+####################### 0.- PARÁMETROS THETA ####################################
+"""
 #Ventana para control de Parámetros Theta
 fig_theta = plt.figure(figsize=[8,4])
 ax_circle = plt.subplot(frame_on=False)
@@ -143,6 +156,9 @@ s_tS.on_changed(update_circle)
 s_tTd.on_changed(update_circle)
 s_tTu.on_changed(update_circle)
 
+"""
+####################### 0.- PARÁMETROS GAUSS ####################################
+"""
 #Ventana para control de Parámetros a y b
 fig_gauss = plt.figure(figsize=[10,6])
 

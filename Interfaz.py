@@ -139,7 +139,6 @@ def generator(dpf):
     i = 0
     data = []
     
-    global param_gener
     global Flag
     
     
@@ -152,9 +151,6 @@ def generator(dpf):
             x_val, y_val, z_m, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
             print("yas2")
             print(len(z_val), len(z_m))
-            #z_val = z_m
-            #z_val[actual_point:] = z_m[actual_point:]
-            
             a = z_val[:actual_point]
             b = z_m[actual_point:]
             
@@ -162,12 +158,16 @@ def generator(dpf):
             print("yas3")
             z_val = np.concatenate((a,b))
             print("yas4")
+            
+            fi = 1 / param_gener[4]    #Frame Interval 
+            dpf = fi/ param_gener[5]    #Datos por frame
+            
             Flag = False
-        data = [x_val, y_val, z_val, t, i]
+        data = [x_val, y_val, z_val, t, i, param_gener[4],dpf]
         yield data
         
         i += 1
-        n_frames = round(len(t)/DpF)
+        n_frames = round(len(t)/dpf)
         if i+1 >= n_frames: 
             i = 0
             z_val = z_m
@@ -228,12 +228,14 @@ def init():                     #Sin esta función también funciona. Documentac
     return sign, signr
 
 
-def ecg_beat(data, sign, signr, hrmean, dt, mtr, DpF):
+def ecg_beat(data, sign, signr, mtr):
     
     
+    z   = data[2]
+    t   = data[3]
     num = data[4]
-    t = data[3]
-    z = data[2]
+    dt  = data[5]
+    DpF_n = data[6]
     #t = data[0]
     #z = data[1]
     #Posible mejora: Usar el argumento 'Frames' para pasar la data. Ahora, para cada frame, le paso la lista completa de datos. Mucho 
@@ -241,8 +243,8 @@ def ecg_beat(data, sign, signr, hrmean, dt, mtr, DpF):
     time_gap = 0.01   #Separación entre la nueva señal y la anterior. En [s]
     
     data_gap = time_gap/dt    #
-    growth_cursor = int(round(num*DpF - int(data_gap/2)))
-    decrease_cursor = int(round(num*DpF + int(data_gap/2)))
+    growth_cursor = int(round(num*DpF_n - int(data_gap/2)))
+    decrease_cursor = int(round(num*DpF_n + int(data_gap/2)))
     
     #print()
     
@@ -293,5 +295,5 @@ def ecg_beat(data, sign, signr, hrmean, dt, mtr, DpF):
  
     return sign, signr
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = generator(DpF), init_func=init, fargs = (sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = generator(DpF), init_func=init, fargs = (sign,signr,mtr), interval=FI*1000, blit=1)
 plt.show()
