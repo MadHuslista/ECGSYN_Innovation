@@ -1,0 +1,24 @@
+BITÁCORA DESARROLLO ANIMACIÓN
+    
+Desarrollo hasta ahora: 
+
+Ocurre lo siguiente: 
+    - la FuncAnimation genera la animación y para ello utiliza el argumento frames. 
+    - Este argumento frames toma un generador con argumento igual a EL LARGO COMPLETO DE FRAMES DISPONIBLES. 
+        (EDIT: ESTE ARGUMENTO ERA PORQUE EL SPYDER GUARDABA LA MEMORIA DE EJECUCIONES ANTERIORES)
+    - Luego, para cada frame, este generador hace esto: 
+        - LLama a la función pp(i) y le pasa el argumento num (En este caso, el número de frame en que estamos)
+        - Esta función pp hace cosas con el argumento i y retorna una variable resultado. 
+        - Luego el generador toma esta variable que retorno el pp() y la manda como yield al primer argumento de la función de refresco. 
+        - ADEMÁS EL YIELD PUEDE RETORNAR ARREGLOS!!! 
+        - solucionado el tema de pasar la data y además pasar el número del frame. 
+        - Se puede pasar todo en un sólo gran arreglo. 
+
+Luego: 
+
+    - Considerando lo anterior. Me aprovecho de la función pp para que tome una variable globa y la retorne al generador. 
+    - El quid del asunto es que esta variable global está siendo modificada por el update del slider, por tanto cada vez que modifico el slider, la variable global se altera y la función que está siendo llamada por el iterador recupera ese dato y logra pasarlo a la animación y esta se actualiza <3
+
+considerando el uso de variables globales, me puedo saltar directamente el uso de la func y puedo usar el iterador no más. 
+    
+CONSEGUIDO CTMRE

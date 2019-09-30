@@ -11,8 +11,10 @@ from matplotlib import animation
 
 from rr_gen import RR_gen
 from din_fun import dinamic_function
+from model_func import model
 
 from datetime import datetime
+plt.close("all")
 
 
 """
@@ -24,7 +26,9 @@ from datetime import datetime
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
-n = 10                              #Cantidad de Pulsaciones simuladas
+n = 8                               #Cantidad de Pulsaciones simuladas
+dt = 0.001                           # En segundos
+FPS = 30
 
 #Control de Artefactos
 Anoise = 0.15                       #Amplitud del Ruido Aleatorio
@@ -41,7 +45,6 @@ f2 = 0.25*2*m.pi                    #Frecuencia Central Onda RSA
 
 
 #La Morfología del Ciclo ECG se define en el punto 2.- "DEFINICIÓN DE PARÁMETROS Y EMPAQUETAMIENTO DE VARIABLES"
-
 
 """
 ########################### 1.- CREACIÓN DEL TACOGRAMA ########################### 
@@ -89,10 +92,7 @@ b_S = 0.1 * hr_factor
 b_Td = 0.4 * (1/hr_factor)
 b_Tu = 0.2 * hr_factor
 
-RR = rr_times[0]                        #Esta definición está aquí para poder iniciar el empaquetamiento para el ODE. 
-                                        #Si bien 'RR' actúa como constante, como a lo largo del tiempo debe ser actualizada, aquí sería como especificar otro valor inicial 
 
-params = [theta_P, theta_Q, theta_R, theta_S, theta_Td, theta_Tu, a_P, a_Q, a_R, a_S, a_Td, a_Tu, b_P, b_Q, b_R, b_S, b_Td, b_Tu, RR, fresp]
 
 """Valores Iniciales y empaquetamiento"""
 
@@ -103,8 +103,30 @@ Z0 = 0.04
 y0 = [X0, Y0, Z0]                       #Empaquetamiento de los valores iniciales en una sóla variable. 
 
 """Construcción del step size para la integración numérica"""
-dt = 0.01                              
+#dt = 0.01                              
 t = np.arange(0, rr_axis[-1], dt)       #rr_axis[-1] representa al último elemento de rr_axis
+
+
+
+
+
+
+"""
+########################### EMPAQUETAMIENTO ########################### 
+"""
+
+RR = rr_times[0]                        #Esta definición está aquí para poder iniciar el empaquetamiento para el ODE. 
+                                        #Si bien 'RR' actúa como constante, como a lo largo del tiempo debe ser actualizada, aquí sería como especificar otro valor inicial 
+
+params = [theta_P, theta_Q, theta_R, theta_S, theta_Td, theta_Tu, a_P, a_Q, a_R, a_S, a_Td, a_Tu, b_P, b_Q, b_R, b_S, b_Td, b_Tu, RR, fresp]
+
+
+
+
+
+
+
+
 
 
 
@@ -151,7 +173,6 @@ noise = np.sin(2*np.pi*t*Hz_Noise)
 z = z + Hz_Anoise*noise
 
 
-
 """
 ####################### 5.- GRAFICACÍON CON MATPLOTLIB ###################
 """
@@ -160,6 +181,13 @@ z = z + Hz_Anoise*noise
 x_values = np.array(psoln).T[0]
 y_values = np.array(psoln).T[1]
 z_values = z
+
+#print(len(z_values))
+
+#x_values, y_values, z_values, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vasl, y0) 
+
+
+
 
 """Gráfico 2D (t, Z)"""
 
@@ -180,7 +208,7 @@ ax_st.yaxis.grid(True, which='minor', lw= 0.5)
 
 ax_st.set_xticks(np.arange(0,t[-1], step=0.2), minor = False)                
 ax_st.set_xticks(np.arange(0,t[-1], step=0.04), minor = True)
-#-
+
 ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.5), minor = False)                
 ax_st.set_yticks(np.arange(Amp_ECG*-0.15,Amp_ECG*1.09, step=0.1), minor = True)
 
@@ -203,7 +231,7 @@ ax_st.set_aspect(0.4)
 fig_2d, ax_2d = plt.subplots()
 
 
-mtr = 2 #Monitor Time Range
+mtr = 4 #Monitor Time Range
 
 data_2d = [t, z_values]
 
@@ -230,6 +258,9 @@ ax_2d.yaxis.grid(True, which='minor', lw= 0.5)
 xdata1, ydata1 = [], []
 xdata2, ydata2 = [], []
 
+FI = 1 / FPS    #Frame Interval 
+DpF = FI/ dt    #Datos por frame
+
 
 def init():                    
     ax_2d.set_ylim(Amp_ECG*-0.15,Amp_ECG*1.09)
@@ -240,36 +271,43 @@ def init():
     del ydata2[:]
     sign, = ax_2d.plot([],[])
     signr,= ax_2d.plot([],[])
-    return sign,
+    return sign, signr
 
 
-def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
+def ecg_beat(num, data, sign, signr, hrmean, dt, mtr, DpF):
+    
+    
     
     t = data[0]
     z = data[1]
 
     
-    gap = 10    
-    semi_gap = int(gap/2)
+    time_gap = 0.01   #Separación entre la nueva señal y la anterior. En [s]
+    
+    data_gap = time_gap/dt    #
+    growth_cursor = int(round(num*DpF - int(data_gap/2)))
+    decrease_cursor = int(round(num*DpF + int(data_gap/2)))
+    
     
     xmin, xmax = ax_2d.get_xlim()
     pos_inf = int(xmin/dt)
     pos_sup = int(xmax/dt)
+
     if pos_sup > len(t)-1:
         pos_sup = len(t)-1
     
     
     
-    xdata1 = t[pos_inf:num-semi_gap]
-    ydata1 = z[pos_inf:num-semi_gap]
+    xdata1 = t[pos_inf:growth_cursor]
+    ydata1 = z[pos_inf:growth_cursor]
     
     
-    if num*dt < mtr:
+    if growth_cursor*dt < mtr:
         xdata2 = []
         ydata2 = []
     else:
-        xdata2 = t[num+semi_gap:pos_sup]
-        ydata2 = z[num+semi_gap-int(mtr/dt):pos_sup-int(mtr/dt)]
+        xdata2 = t[decrease_cursor:pos_sup]
+        ydata2 = z[decrease_cursor-int(mtr/dt):pos_sup-int(mtr/dt)]
 
         
     
@@ -282,7 +320,7 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
         
         ax_2d.figure.canvas.draw()
         
-    elif dt*num > xmax: 
+    elif growth_cursor*dt > xmax: 
         ax_2d.set_xlim(xmin+mtr,xmax+mtr)                
 
         ax_2d.set_xticks(np.arange(xmin+mtr,xmax+mtr, step=0.2), minor = False)                
@@ -296,7 +334,8 @@ def ecg_beat(num, data, sign, signr, hrmean, dt, mtr):
     return sign, signr
     
 
-ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = len(psoln), init_func=init, fargs = (data_2d,sign, signr,hrmean,dt, mtr), interval=1000*dt, blit=1)
+
+ani_2d = animation.FuncAnimation(fig_2d,ecg_beat, frames = round(len(t)/DpF), init_func=init, fargs = (data_2d,sign,signr,hrmean,dt, mtr, DpF), interval=FI*1000, blit=1)
 plt.show()
 
 
@@ -307,8 +346,8 @@ plt.show()
 fig = plt.figure()
 ax = p3.Axes3D(fig)
 
-data = np.array(psoln).T
-data[2] = z_values
+data = [x_values, y_values, z_values]
+data = np.array(data)
 
 line, = ax.plot([],[],[])
 liner, = ax.plot([],[],[], 'r')
@@ -323,37 +362,41 @@ ax.set_zlim3d([-0.5, 1.5])
 ax.set_zlabel('Z')
 
 
-def update(num, data, line, liner, hrmean, dt):
+FI_3d = 1 / FPS    #Frame Interval 
+DpF_3d = FI_3d/ dt    #Datos por frame
+
+def update(num, data, line, liner, hrmean, dt, DpF_3d):
     
-    rr_interval = 60/(hrmean*dt)
-    segunda_vuelta = rr_interval*2
+    data_rrinterval = 60/(hrmean*dt)    #Calcula cuantos PUNTOS transcurren en una vuelta
+    segunda_vuelta = data_rrinterval*2  
+
+    upr_cursor = int(num*DpF_3d)
+    downr_cursor = int(num*DpF_3d - data_rrinterval)
     
-    
-    rr_interval = int(rr_interval)    
-    segunda_vuelta = int(segunda_vuelta)
-    
-    if num > segunda_vuelta :
-        line.set_data(data[:2, (num-segunda_vuelta):(num-rr_interval+1)])
-        line.set_3d_properties(data[2, (num-segunda_vuelta):(num-rr_interval+1)])
+    up_cursor = int(num*DpF_3d - data_rrinterval +1)
+    down_cursor = int(num*DpF_3d - segunda_vuelta)
         
-        liner.set_data(data[:2, (num-rr_interval):num])
-        liner.set_3d_properties(data[2, (num-rr_interval):num])
+    if upr_cursor > segunda_vuelta : 
+        line.set_data(data[:2, down_cursor:up_cursor])
+        line.set_3d_properties(data[2, down_cursor:up_cursor])
+        
+        liner.set_data(data[:2, downr_cursor:upr_cursor])
+        liner.set_3d_properties(data[2, downr_cursor:upr_cursor])
         
                        
         return line,liner
 
 
     else:
-        liner.set_data(data[:2, 0:num])
-        liner.set_3d_properties(data[2, 0:num])
+        liner.set_data(data[:2, 0:upr_cursor])
+        liner.set_3d_properties(data[2, 0:upr_cursor])
         
         return line,liner
     
 
 
 
-ani = animation.FuncAnimation(fig, update, frames=len(psoln), fargs=(data, line, liner, hrmean, dt), interval=1000*dt, blit=1)
-
+ani = animation.FuncAnimation(fig, update, frames=round(len(t)/DpF_3d), fargs=(data, line, liner, hrmean, dt, DpF_3d), interval=1000*FI, blit=1)
 plt.show()
 
 
