@@ -59,18 +59,39 @@ y0              = varfun.y0
 
 slid.fig_gen.show()
 
-def update_gen(val):
-    global param_Artf
+
+
+def update_gen(event):
+    global param_gener
     global Flag
     Flag = True
-    param_Artf[0] = slid.sfreq.val
     
-slid.s_hrmean.on_changed(update_gen)
-slid.s_resp.on_changed(update_gen)
-slid.s_Amp_ECG.on_changed(update_gen)
-slid.s_n.on_changed(update_gen)
-slid.s_dt.on_changed(update_gen)
-slid.s_FPS.on_changed(update_gen)    
+    param_gener[0] = slid.s_hrmean.val
+    param_gener[1] = slid.s_resp.val
+    param_gener[2] = slid.s_Amp_ECG.val
+    param_gener[3] = slid.s_n.val
+    param_gener[4] = slid.s_dt.val
+    param_gener[5] = slid.s_FPS.val
+ 
+slid.sim_gen.on_clicked(update_gen)
+
+#slid.s_hrmean.on_changed(update_gen)
+#slid.s_resp.on_changed(update_gen)
+#slid.s_Amp_ECG.on_changed(update_gen)
+#slid.s_n.on_changed(update_gen)
+#slid.s_dt.on_changed(update_gen)
+#slid.s_FPS.on_changed(update_gen)    
+
+
+#slid.fig_Artf.show()
+
+#def update_Artf(val):
+#    global param_Artf
+#    global Flag
+#    Flag = True
+
+    
+    
 
 
 """
@@ -83,11 +104,12 @@ def generator(dpf):
     i = 0
     data = []
     
-    global param_Artf
+    global param_gener
     global Flag
     
     
     x_val, y_val, z_val, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
+    z_m = z_val 
     while True: 
         actual_point = int(dpf*i)
         if Flag:
@@ -101,7 +123,6 @@ def generator(dpf):
         n_frames = round(len(t)/DpF)
         if i+1 >= n_frames: 
             i = 0
-            print("g")
             z_val = z_m
 
 
