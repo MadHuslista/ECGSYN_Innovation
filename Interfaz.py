@@ -57,41 +57,30 @@ y0              = varfun.y0
 ####################### 2.2.- Elementos Slider ####################################
 """
 
-slid.fig_gen.show()
+def update_Artf(event):
+    global param_Artf
+    global Flag
+    param_Artf[0] = slid.s_Anoise.val
+    param_Artf[1] = slid.s_Hznoise.val
+    param_Artf[2] = slid.s_AHznoise.val
+    Flag = True
+slid.fig_Artf.show()
+slid.sim_Artf.on_clicked(update_Artf)
 
 
 
 def update_gen(event):
     global param_gener
     global Flag
-    Flag = True
-    
-    param_gener[0] = slid.s_hrmean.val
+    param_gener[0] = slid.s_hrmean.val      #necesita generación completa de la señal
     param_gener[1] = slid.s_resp.val
-    param_gener[2] = slid.s_Amp_ECG.val
+    param_gener[2] = slid.s_Amp_ECG.val     #Revisar máximos graph
     param_gener[3] = slid.s_n.val
-    param_gener[4] = slid.s_dt.val
+    param_gener[4] = 1/(10**slid.s_dt.val)  #Revisar FPs abajo. Genera problema con el FPS si no se actualiza hacia abajo también
     param_gener[5] = slid.s_FPS.val
- 
+    Flag = True
+slid.fig_gen.show()    
 slid.sim_gen.on_clicked(update_gen)
-
-#slid.s_hrmean.on_changed(update_gen)
-#slid.s_resp.on_changed(update_gen)
-#slid.s_Amp_ECG.on_changed(update_gen)
-#slid.s_n.on_changed(update_gen)
-#slid.s_dt.on_changed(update_gen)
-#slid.s_FPS.on_changed(update_gen)    
-
-
-#slid.fig_Artf.show()
-
-#def update_Artf(val):
-#    global param_Artf
-#    global Flag
-#    Flag = True
-
-    
-    
 
 
 """
@@ -113,8 +102,13 @@ def generator(dpf):
     while True: 
         actual_point = int(dpf*i)
         if Flag:
+            print("yas1")
             x_val, y_val, z_m, t = model(param_gener, param_Artf, param_HVR, theta_vals, a_vals, b_vals, y0)
-            z_val[actual_point:] = z_m[actual_point:]
+            print("yas2")
+            print(len(z_val), len(z_m))
+            z_val = z_m
+            #z_val[actual_point:] = z_m[actual_point:]
+            print("yas3")
             Flag = False
         data = [x_val, y_val, z_val, t, i]
         yield data
@@ -133,7 +127,7 @@ def generator(dpf):
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 2 #Monitor Time Range
+mtr = 7 #Monitor Time Range
 hrmean = param_gener[0]
 Amp_ECG = param_gener[2]
 FPS = param_gener[5]
