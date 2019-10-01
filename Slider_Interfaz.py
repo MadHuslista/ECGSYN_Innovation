@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from matplotlib.widgets import Slider, Button
 
-#plt.close("all")
+plt.close("all")
 
 
 """
@@ -22,7 +22,9 @@ from matplotlib.widgets import Slider, Button
 axcolor = 'lightgoldenrodyellow'
 
 #Ventana para control de Parámetros Generales
-fig_gen = plt.figure(figsize=[10,2])
+
+fog = plt.figure(figsize=[10,2])
+fig_gen = fog
 
 ax_hrmean       = fig_gen.add_axes([0.25, 0.15, 0.65, 0.05], facecolor=axcolor)
 ax_Resp_by_min  = fig_gen.add_axes([0.25, 0.25, 0.65, 0.05], facecolor=axcolor)
@@ -59,6 +61,7 @@ rst_gen.on_clicked(reset_gen)
 
 #Ventana para control de Parámetros Artefactos
 fig_Artf = plt.figure(figsize=[8,1])
+#fig_Artf = fig_gen
 
 ax_Anoise       = fig_Artf.add_axes([0.25, 0.25, 0.65, 0.1], facecolor=axcolor)
 ax_Hz_noise     = fig_Artf.add_axes([0.25, 0.5, 0.65, 0.1], facecolor=axcolor)
@@ -83,15 +86,15 @@ rst_Artf.on_clicked(reset_Artf)
 ####################### 0.- PARÁMETROS HVR ####################################
 """
 #Ventana para control de Parámetros HVR
-fig_HVR = plt.figure(figsize=[8,1])
+fig_HVR = plt.figure(figsize=[8,2])
 
-ax_hrstd    = fig_HVR.add_axes([0.25, 0.1, 0.65, 0.1], facecolor=axcolor)
-ax_c1       = fig_HVR.add_axes([0.25, 0.3, 0.65, 0.1], facecolor=axcolor)
-ax_c2       = fig_HVR.add_axes([0.25, 0.5, 0.65, 0.1], facecolor=axcolor)
-ax_f1       = fig_HVR.add_axes([0.25, 0.7, 0.65, 0.1], facecolor=axcolor)
-ax_f2       = fig_HVR.add_axes([0.25, 0.8, 0.65, 0.1], facecolor=axcolor)
-ax_sim_HVR  = fig_HVR.add_axes([0.8, 0.020, 0.1, 0.20], facecolor=axcolor)
-ax_rst_HVR  = fig_HVR.add_axes([0.25, 0.020, 0.1, 0.1], facecolor=axcolor)
+ax_hrstd    = fig_HVR.add_axes([0.3, 0.2, 0.6, 0.05], facecolor=axcolor)
+ax_c1       = fig_HVR.add_axes([0.3, 0.34, 0.6, 0.05], facecolor=axcolor)
+ax_c2       = fig_HVR.add_axes([0.3, 0.48, 0.6, 0.05], facecolor=axcolor)
+ax_f1       = fig_HVR.add_axes([0.3, 0.62, 0.6, 0.05], facecolor=axcolor)
+ax_f2       = fig_HVR.add_axes([0.3, 0.75, 0.6, 0.05], facecolor=axcolor)
+ax_sim_HVR  = fig_HVR.add_axes([0.8, 0.020, 0.1, 0.1], facecolor=axcolor)
+ax_rst_HVR  = fig_HVR.add_axes([0.3, 0.020, 0.1, 0.1], facecolor=axcolor)
 
 s_hrstd     = Slider(ax_hrstd, 'Desv.Est. Frec. Cardíaca', 0, 10, valinit=0., valstep=0.1)
 s_c1        = Slider(ax_c1, 'Desv.Est. Onda Mayer', 0, 0.5, valinit=0.01, valstep=0.01)
@@ -139,6 +142,7 @@ s_tTd  = Slider(ax_tTd, 'Td',   -1, 1, valinit=(5/9 - 1/60), valstep=0.01)
 s_tTu  = Slider(ax_tTu, 'Tu',   -1, 1, valinit=5/9, valstep=0.01)
 sim_th = Button(ax_sim_th, 'Simular', color=axcolor, hovercolor='0.975')
 rst_th = Button(ax_rst_th, 'Reset', color=axcolor, hovercolor='0.975')
+
 
 p_P  = ax_circle.scatter(np.cos(-1/3*m.pi), np.sin(-1/3*m.pi))
 p_Q  = ax_circle.scatter(np.cos(-1/12*m.pi), np.sin(-1/12*m.pi))
