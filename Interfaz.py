@@ -163,7 +163,7 @@ def generator(dpf):
 fig_2d, ax_2d = plt.subplots()
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 7 #Monitor Time Range
+mtr = 2 #Monitor Time Range
 hrmean = param_gener[0]
 Amp_ECG = param_gener[2]
 FPS = param_gener[5]
