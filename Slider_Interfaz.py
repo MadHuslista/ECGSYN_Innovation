@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from matplotlib.widgets import Slider, Button
 
-#plt.close("all")
+plt.close("all")
 
 
 """
@@ -86,15 +86,15 @@ rst_Artf.on_clicked(reset_Artf)
 ####################### 0.- PARÁMETROS HVR ####################################
 """
 #Ventana para control de Parámetros HVR
-fig_HVR = plt.figure(figsize=[8,1])
+fig_HVR = plt.figure(figsize=[8,2])
 
-ax_hrstd    = fig_HVR.add_axes([0.25, 0.1, 0.65, 0.1], facecolor=axcolor)
-ax_c1       = fig_HVR.add_axes([0.25, 0.3, 0.65, 0.1], facecolor=axcolor)
-ax_c2       = fig_HVR.add_axes([0.25, 0.5, 0.65, 0.1], facecolor=axcolor)
-ax_f1       = fig_HVR.add_axes([0.25, 0.7, 0.65, 0.1], facecolor=axcolor)
-ax_f2       = fig_HVR.add_axes([0.25, 0.8, 0.65, 0.1], facecolor=axcolor)
-ax_sim_HVR  = fig_HVR.add_axes([0.8, 0.020, 0.1, 0.20], facecolor=axcolor)
-ax_rst_HVR  = fig_HVR.add_axes([0.25, 0.020, 0.1, 0.1], facecolor=axcolor)
+ax_hrstd    = fig_HVR.add_axes([0.3, 0.2, 0.6, 0.05], facecolor=axcolor)
+ax_c1       = fig_HVR.add_axes([0.3, 0.34, 0.6, 0.05], facecolor=axcolor)
+ax_c2       = fig_HVR.add_axes([0.3, 0.48, 0.6, 0.05], facecolor=axcolor)
+ax_f1       = fig_HVR.add_axes([0.3, 0.62, 0.6, 0.05], facecolor=axcolor)
+ax_f2       = fig_HVR.add_axes([0.3, 0.75, 0.6, 0.05], facecolor=axcolor)
+ax_sim_HVR  = fig_HVR.add_axes([0.8, 0.020, 0.1, 0.1], facecolor=axcolor)
+ax_rst_HVR  = fig_HVR.add_axes([0.3, 0.020, 0.1, 0.1], facecolor=axcolor)
 
 s_hrstd     = Slider(ax_hrstd, 'Desv.Est. Frec. Cardíaca', 0, 10, valinit=0., valstep=0.1)
 s_c1        = Slider(ax_c1, 'Desv.Est. Onda Mayer', 0, 0.5, valinit=0.01, valstep=0.01)
