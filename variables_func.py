@@ -17,7 +17,7 @@ import math as m
 hrmean = 60                         #Frecuencia Cardíaca
 Resp_by_min = 15                    #Frecuencia Respiratoria
 Amp_ECG = 1.7                       #Amplitud Máxima ECG
-n = 7                              #Cantidad de Pulsaciones simuladas
+n = 5                              #Cantidad de Pulsaciones simuladas
 dt = 0.001                           # En segundos
 FPS = 40
 
@@ -28,7 +28,7 @@ Hz_Anoise = 0.05                    #Amplitud de la Interferencia
 
 
 #Variabilidad del Pulso Cardíaco
-hrstd = 0                           #Desviación Estándar de la Frecuencia Cardíaca
+hrstd = 5                           #Desviación Estándar de la Frecuencia Cardíaca
 c1 = 2*m.pi*0.01                    #Desviación Estándar Onda Mayer
 c2 = 2*m.pi*0.01                    #Desviación Estándar Onda RSA
 f1 = 0.1*2*m.pi                     #Frecuencia Central Onda Mayer

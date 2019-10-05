@@ -161,9 +161,10 @@ def generator(dpf):
 """
 
 fig_2d, ax_2d = plt.subplots()
+fig_2d.suptitle("Señal ECG",  y = 0.98,fontsize=15)
 #Agregar grid reglamentaria del papel al gráfico 
 
-mtr = 2 #Monitor Time Range
+mtr = 6 #Monitor Time Range
 hrmean = param_gener[0]
 Amp_ECG = param_gener[2]
 FPS = param_gener[5]
